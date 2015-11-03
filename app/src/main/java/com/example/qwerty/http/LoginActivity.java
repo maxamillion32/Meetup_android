@@ -83,7 +83,7 @@ public class LoginActivity extends Activity {
         showpDialog();
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getResources().getString(R.string.apiUrl),
+                getResources().getString(R.string.apiUrl).concat("/userentry"),
                 populateRequestData(), new Response.Listener<JSONObject>() {
 
 
