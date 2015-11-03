@@ -70,7 +70,7 @@ public class LoginActivity extends Activity {
 
     private JSONObject populateRequestData () {
         try {
-            requestData.put("username", uNameField.getText().toString());
+            requestData.put("name", uNameField.getText().toString());
             requestData.put("_email", emailField.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
