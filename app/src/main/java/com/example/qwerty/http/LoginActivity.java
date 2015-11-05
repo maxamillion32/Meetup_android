@@ -2,8 +2,8 @@ package com.example.qwerty.http;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,11 +35,14 @@ public class LoginActivity extends Activity {
     EditText uNameField;
     ProgressDialog pDialog;
     JSONObject requestData = new JSONObject();
+    JSONArray meetings = new JSONArray();
+    DBHelper db;
 
     private static String TAG = LoginActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        db = new DBHelper(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -70,7 +74,7 @@ public class LoginActivity extends Activity {
 
     private JSONObject populateRequestData () {
         try {
-            requestData.put("username", uNameField.getText().toString());
+            requestData.put("name", uNameField.getText().toString());
             requestData.put("_email", emailField.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -83,21 +87,40 @@ public class LoginActivity extends Activity {
         showpDialog();
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getResources().getString(R.string.apiUrl).concat("/userentry"),
+                getString(R.string.apiUrl).concat("/userentry"),
                 populateRequestData(), new Response.Listener<JSONObject>() {
 
 
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
-
-                // Parsing json object response
-                // response will be a json object
-                VolleyLog.d("json", response);
-                responseSpace.setText(response.toString());
-
-
+                //responseSpace.setText(response.toString());
                 hidepDialog();
+                try {
+                    meetings = response.getJSONArray("meetings");
+
+                    db.setData(response.getString("_id"), true);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+               try {
+                    Cursor c = db.getUser(response.getString("_id"));
+                    String asd = "";
+                    if(c.isBeforeFirst())c.moveToNext();
+                    while(!c.isAfterLast()) {
+                        asd +=c.getString(c.getColumnIndex("uid"));
+                        c.moveToNext();
+                   }
+                    responseSpace.setText(asd);
+
+               } catch (Exception e) {
+                    e.printStackTrace();
+               }
+
+                //Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                //intent.putExtra("meetings", meetings.toString());
+                //startActivity(intent);
             }
         }, new Response.ErrorListener() {
 
@@ -112,7 +135,7 @@ public class LoginActivity extends Activity {
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 headers.put( "charset", "utf-8");
                 return headers;
@@ -123,5 +146,6 @@ public class LoginActivity extends Activity {
         MySingleton.getInstance(this).addToRequestQueue(req);
     }
 
-
 }
+
+
