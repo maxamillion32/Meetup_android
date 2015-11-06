@@ -3,7 +3,9 @@ package com.example.qwerty.http;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +39,7 @@ public class LoginActivity extends Activity {
     JSONObject requestData = new JSONObject();
     JSONArray meetings = new JSONArray();
     DBHelper db;
+    Cursor c;
 
     private static String TAG = LoginActivity.class.getSimpleName();
 
@@ -53,6 +56,7 @@ public class LoginActivity extends Activity {
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,34 +97,31 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onResponse(JSONObject response) {
-                //responseSpace.setText(response.toString());
+                //db.clearDatabase();
                 hidepDialog();
                 try {
+                    c = db.getUser(response.getString("_id"));
                     meetings = response.getJSONArray("meetings");
+                    if (!c.moveToNext())
+                        db.setData(response.getString("_id"));
 
-                    db.setData(response.getString("_id"), true);
+                    //c = db.getAllUsers();
+                    String asd = "";
+                    if (c.isBeforeFirst())
+                        c.moveToNext();
+                    while (!c.isAfterLast()) {
+                        asd += c.getString(c.getColumnIndex("defaultAccount"));
+                        c.moveToNext();
+                    }
+                    c.close();
+                    responseSpace.setText(asd);
 
+                    //Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    //intent.putExtra("meetings", meetings.toString());
+                    //startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-               try {
-                    Cursor c = db.getUser(response.getString("_id"));
-                    String asd = "";
-                    if(c.isBeforeFirst())c.moveToNext();
-                    while(!c.isAfterLast()) {
-                        asd +=c.getString(c.getColumnIndex("uid"));
-                        c.moveToNext();
-                   }
-                    responseSpace.setText(asd);
-
-               } catch (Exception e) {
-                    e.printStackTrace();
-               }
-
-                //Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                //intent.putExtra("meetings", meetings.toString());
-                //startActivity(intent);
             }
         }, new Response.ErrorListener() {
 

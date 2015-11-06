@@ -3,16 +3,13 @@ package com.example.qwerty.http;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -20,9 +17,10 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
 
     Button btnMakeObjectRequest;
+    Button meetingCreation;
     JSONArray meetUps = new JSONArray();
     ArrayList<String> meetupList = new ArrayList<String>();
-    ListView listview = (ListView) findViewById(R.id.listView);
+    ListView listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +28,22 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Intent loginIntent = getIntent();
+
+        listview = (ListView) findViewById(R.id.listView);
         btnMakeObjectRequest = (Button) findViewById(R.id.btnObjRequest);
+        meetingCreation = (Button) findViewById(R.id.createMeetButton);
+
+        meetingCreation.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // launch meetup activity
+                Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
         btnMakeObjectRequest.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -49,7 +62,6 @@ public class MainActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
 
             // add data to ArrayList
             for (int i = 0; i < meetUps.length(); ++i) {
