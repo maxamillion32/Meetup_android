@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -48,11 +47,12 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE " + DATABASE_TABLE + " SET " +
                 DEFAULT_ACCOUNT + " = 0 WHERE " + DEFAULT_ACCOUNT + " = 1");
 
-        //this might actually be pretty retarded
-        else
-            db.execSQL("UPDATE " + DATABASE_TABLE + " SET " +
-                DEFAULT_ACCOUNT + " =  CASE WHEN '" + DEFAULT_ACCOUNT + "' = '" + uid + "' THEN " +
-                    DEFAULT_ACCOUNT + " = 1 ELSE " + DEFAULT_ACCOUNT + " = 0 END");
+        else {
+            db.execSQL("UPDATE " + DATABASE_TABLE + " SET " + DEFAULT_ACCOUNT +
+                    " = 1 WHERE " + UID + " LIKE '" + uid + "'");
+            db.execSQL("UPDATE " + DATABASE_TABLE + " SET " + DEFAULT_ACCOUNT +
+                    " = 0 WHERE " + UID + " NOT LIKE '" + uid + "'");
+        }
     }
 
     public void clearDatabase() {

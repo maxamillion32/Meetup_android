@@ -10,14 +10,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/rowTitleTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:text="Meeting name"/>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/rowDescTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14dp"
@@ -31,5 +31,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/checkBox"
         android:checked="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="user count"
+        android:id="@+id/rowUsrCountTxt" />
 
 </LinearLayout>

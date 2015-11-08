@@ -11,23 +11,33 @@
         android:layout_height="wrap_content"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="Make JSON Object Request"
+        android:text="CREATE USER"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/btnObjRequest" />
+        android:layout_toStartOf="@+id/refreshBtn" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="create meetup"
         android:id="@+id/createMeetButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/btnObjRequest" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_below="@+id/btnObjRequest"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:id="@+id/refreshBtn"
         android:layout_above="@+id/listView"
-        android:layout_alignParentEnd="true" />
+        android:layout_toStartOf="@+id/createMeetButton" />
 
 </RelativeLayout>

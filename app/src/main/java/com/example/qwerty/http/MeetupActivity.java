@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,13 +17,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,12 +63,9 @@ public class MeetupActivity extends Activity {
         title = (TextView) findViewById(R.id.titleTxt);
         invite = (TextView) findViewById(R.id.invTxt);
 
-        c = db.getActiveUser();
-
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 c = db.getActiveUser();
                 if(c.isBeforeFirst())
                     c.moveToNext();
@@ -86,14 +79,6 @@ public class MeetupActivity extends Activity {
         invBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                c = db.getActiveUser();
-                if(c.isBeforeFirst())
-                    c.moveToNext();
-                uid = c.getString(c.getColumnIndex("uid"));
-                c.close();
-
-                makeInviteRequestOnExisting();
                 makeInviteRequestOnNew();
             }
         });
@@ -124,7 +109,7 @@ public class MeetupActivity extends Activity {
     private JSONObject populateInviteRequestBody () {
         JSONObject user = new JSONObject();
         try {
-            user.put("_id", invite.getText().toString());
+            user.put("_email", invite.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -182,7 +167,7 @@ public class MeetupActivity extends Activity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d(TAG, response.toString());
+                        Log.d(TAG, response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -216,13 +201,13 @@ public class MeetupActivity extends Activity {
 
         showpDialog();
 
-        StringRequest sr = new StringRequest(Request.Method.POST,
-                getString(R.string.apiUrl).concat("/meetup/edit"),
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
+                getString(R.string.apiUrl).concat("/meetup/invite"),
                 populateInviteRequestBody(),
-                new Response.Listener<String>() {
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, response.toString());
+                    public void onResponse(JSONObject response) {
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -235,11 +220,11 @@ public class MeetupActivity extends Activity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "text/html");
+                headers.put("Content-Type", "application/json");
                 headers.put("charset", "utf-8");
                 return headers;
             }
         };
-        MySingleton.getInstance(this).addToRequestQueue(sr);
+        MySingleton.getInstance(this).addToRequestQueue(req);
     }
 }

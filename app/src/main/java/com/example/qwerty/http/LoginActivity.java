@@ -37,7 +37,6 @@ public class LoginActivity extends Activity {
     EditText uNameField;
     ProgressDialog pDialog;
     JSONObject requestData = new JSONObject();
-    JSONArray meetings = new JSONArray();
     DBHelper db;
     Cursor c;
 
@@ -101,16 +100,15 @@ public class LoginActivity extends Activity {
                 hidepDialog();
                 try {
                     c = db.getUser(response.getString("_id"));
-                    meetings = response.getJSONArray("meetings");
                     if (!c.moveToNext())
                         db.setData(response.getString("_id"));
-
-                    //c = db.getAllUsers();
+                    c = db.getAllUsers();
                     String asd = "";
                     if (c.isBeforeFirst())
                         c.moveToNext();
                     while (!c.isAfterLast()) {
-                        asd += c.getString(c.getColumnIndex("defaultAccount"));
+                        asd += " uid:  " + c.getString(c.getColumnIndex("uid"));
+                        asd += " default:  " + c.getString(c.getColumnIndex("defaultAccount"));
                         c.moveToNext();
                     }
                     c.close();
