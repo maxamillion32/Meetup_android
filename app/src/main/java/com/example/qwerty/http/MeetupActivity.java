@@ -32,6 +32,7 @@ public class MeetupActivity extends Activity {
     DBHelper db;
     Cursor c;
     JSONObject meeting = new JSONObject();
+    JSONObject uidJson = new JSONObject();
     Button createBtn;
     Button invBtn;
     TextView title;
@@ -63,16 +64,13 @@ public class MeetupActivity extends Activity {
         title = (TextView) findViewById(R.id.titleTxt);
         invite = (TextView) findViewById(R.id.invTxt);
 
+        makeCreateRequest();
+
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                c = db.getActiveUser();
-                if(c.isBeforeFirst())
-                    c.moveToNext();
-                uid = c.getString(c.getColumnIndex("uid"));
-                c.close();
 
-                makeCreateRequest();
+                makeEditRequest();
             }
         });
 
@@ -82,7 +80,6 @@ public class MeetupActivity extends Activity {
                 makeInviteRequestOnNew();
             }
         });
-
     }
 
     private void showpDialog() {
@@ -96,6 +93,15 @@ public class MeetupActivity extends Activity {
     }
 
     private JSONObject populateCreateRequestBody () {
+        try {
+            return uidJson.put("_id", uid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return uidJson;
+    }
+
+    private JSONObject populateEditRequestBody () {
         try {
             meeting.put("description", desc.getText().toString());
             meeting.put("name", title.getText().toString());
@@ -116,7 +122,59 @@ public class MeetupActivity extends Activity {
         return user;
     }
 
+    private void makeEditRequest() {
+        c = db.getActiveUser();
+        if(c.isBeforeFirst())
+            c.moveToNext();
+        uid = c.getString(c.getColumnIndex("uid"));
+        c.close();
+
+        showpDialog();
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
+                getString(R.string.apiUrl).concat("/meetup/edit"),
+                populateEditRequestBody(), new Response.Listener<JSONObject>() {
+
+
+            @Override
+            public void onResponse(JSONObject response) {
+                if(response != null)
+                    Toast.makeText(getApplicationContext(),
+                        "Meetup successfully edited!", Toast.LENGTH_SHORT).show();
+                hidepDialog();
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+                hidepDialog();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("charset", "utf-8");
+                return headers;
+            }
+        };
+
+        // Adding request to request queue
+        MySingleton.getInstance(this).addToRequestQueue(req);
+    }
+
+
     private void makeCreateRequest() {
+        c = db.getActiveUser();
+        if(c.isBeforeFirst())
+            c.moveToNext();
+        uid = c.getString(c.getColumnIndex("uid"));
+        c.close();
 
         showpDialog();
 
@@ -127,8 +185,9 @@ public class MeetupActivity extends Activity {
 
             @Override
             public void onResponse(JSONObject response) {
-                Toast.makeText(getApplicationContext(),
-                        "Meetup successfully created!", Toast.LENGTH_SHORT).show();
+                if(response != null)
+                    Toast.makeText(getApplicationContext(),
+                            "Meetup successfully created!", Toast.LENGTH_SHORT).show();
                 hidepDialog();
 
             }
@@ -207,7 +266,10 @@ public class MeetupActivity extends Activity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Toast.makeText(getApplicationContext(),
+                                response.toString(), Toast.LENGTH_SHORT).show();
+                        // hide the progress dialog
+                        hidepDialog();
                     }
                 }, new Response.ErrorListener() {
             @Override
