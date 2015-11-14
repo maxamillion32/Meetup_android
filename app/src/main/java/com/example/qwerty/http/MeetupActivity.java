@@ -48,7 +48,6 @@ public class MeetupActivity extends Activity {
     RequestCondenser editRequest;
     String uid;
     Context ctx = this;
-    ProgressDialog pDialog;
 
     private static String TAG = MeetupActivity.class.getSimpleName();
 
@@ -60,10 +59,6 @@ public class MeetupActivity extends Activity {
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
         createBtn = (Button) findViewById(R.id.createButton);
-
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
 
         listview = (ListView) findViewById(R.id.usrList);
         desc = (TextView) findViewById(R.id.descTxt);
@@ -95,8 +90,8 @@ public class MeetupActivity extends Activity {
             @Override
             public void responseCallBack(JSONObject response) {
                 Toast.makeText(getApplicationContext(),
-                        "Meetup successfully created!", Toast.LENGTH_SHORT).show();
-                hidepDialog();
+                        "Meetup successfully created!" +
+                        " Now to add content and people to it!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -108,8 +103,7 @@ public class MeetupActivity extends Activity {
                     @Override
                     public void responseCallBack(JSONObject response) {
                         Toast.makeText(getApplicationContext(),
-                                "Meetup successfully created!", Toast.LENGTH_SHORT).show();
-                        hidepDialog();
+                                "Meetup successfully edited!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -123,42 +117,34 @@ public class MeetupActivity extends Activity {
                     @Override
                     public void responseCallBack(JSONObject response) {
                         try {
-                            users = response.getJSONArray("users");
+                            if (!response.isNull("users")) {
+
+                                users = response.getJSONArray("users");
+                                userList.clear();
+
+                                for (int i = 0; i < users.length(); ++i) {
+                                    try {
+                                        userList.add(users.getJSONObject(i));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                // add data to ArrayAdapter
+                                UserArrayAdapter adapter = new UserArrayAdapter(ctx, userList);
+                                // set data to listView with adapter
+                                listview.setAdapter(adapter);
+                            }
+                            else
+                                Toast.makeText(ctx,
+                                "No such user exists!", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        userList.clear();
-
-                        for (int i = 0; i < users.length(); ++i) {
-                            try {
-                                userList.add(users.getJSONObject(i));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        // add data to ArrayAdapter
-                        UserArrayAdapter adapter = new UserArrayAdapter(ctx, userList);
-                        // set data to listView with adapter
-                        listview.setAdapter(adapter);
-
-                        // hide the progress dialog
-                        hidepDialog();
                     }
                 });
             }
         });
-    }
-
-    private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
-    }
-
-    private void hidepDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
     }
 
     private JSONObject populateCreateRequestBody () {
