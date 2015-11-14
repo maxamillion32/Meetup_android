@@ -2,11 +2,13 @@ package com.example.qwerty.http;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,9 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-//miksi oncreatella ei piirra listaa vaan pitaa refreshata
-//vaikka data on olemassa
-
 public class MainActivity extends Activity {
 
     Button refreshBtn;
@@ -40,8 +39,8 @@ public class MainActivity extends Activity {
     Button btnMakeObjectRequest;
 
     ProgressDialog pDialog;
-    JSONArray meetUps = new JSONArray();
-    ArrayList<JSONObject> meetupList = new ArrayList<JSONObject>();
+    JSONArray meetUps;
+    ArrayList<JSONObject> meetupList = new ArrayList<>();
     ListView listview;
     DBHelper db;
     Cursor c;
@@ -64,12 +63,28 @@ public class MainActivity extends Activity {
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
 
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),
+                        view.getTag().toString(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, MeetupOverviewActivity.class);
+                intent.putExtra("meetup", view.getTag().toString());
+                intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
+                startActivity(intent);
+            }
+        });
+
         meetingCreation.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                c = db.getActiveUser();
+                c.moveToNext();
+
                 // launch meetup activity
                 Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
+                intent.putExtra("_id", c.getString(c.getColumnIndex("uid")));
                 startActivity(intent);
 
             }
@@ -91,10 +106,10 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                getMeetUps();
+                requestCaller();
             }
         });
-        getMeetUps();
+        requestCaller();
     }
 
     private JSONObject getRequestData() {
@@ -112,7 +127,7 @@ public class MainActivity extends Activity {
             return obj;
     }
 
-    private void getMeetUps() {
+    private void getMeetUps(final Context context) {
         showpDialog();
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
                 getString(R.string.apiUrl).concat("/user/meetups"),
@@ -127,6 +142,20 @@ public class MainActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                meetupList.clear();
+
+                for (int i = 0; i < meetUps.length(); ++i) {
+                    try {
+                        meetupList.add(meetUps.getJSONObject(i));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // add data to ArrayAdapter
+                MeetupArrayAdapter adapter = new MeetupArrayAdapter(context, meetupList);
+                // set data to listView with adapter
+                listview.setAdapter(adapter);
 
             }
         }, new Response.ErrorListener() {
@@ -149,24 +178,13 @@ public class MainActivity extends Activity {
                 return headers;
             }
         };
-
         // Adding request to request queue
         MySingleton.getInstance(this).addToRequestQueue(req);
 
-        meetupList.clear();
+    }
 
-        for (int i = 0; i < meetUps.length(); ++i) {
-            try {
-                meetupList.add(meetUps.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // add data to ArrayAdapter
-        MeetupArrayAdapter adapter = new MeetupArrayAdapter(this, meetupList);
-        // set data to listView with adapter
-        listview.setAdapter(adapter);
+    private void requestCaller() {
+        getMeetUps(this);
     }
 
     private void showpDialog() {

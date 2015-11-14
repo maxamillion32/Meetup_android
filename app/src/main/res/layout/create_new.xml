@@ -27,7 +27,8 @@
         android:layout_width="307dp"
         android:layout_height="wrap_content"
         android:id="@+id/descTxt"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,17 +43,32 @@
         android:id="@+id/invTxt"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="invite people"
-        android:id="@+id/invButton"
-        android:layout_gravity="center_horizontal" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="invite people"
+            android:id="@+id/invButton" />
 
-    <Button
-        android:layout_width="321dp"
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="refresh people"
+            android:id="@+id/button"
+            android:layout_gravity="right" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CREATE"
+            android:id="@+id/createButton" />
+        </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="CREATE"
-        android:id="@+id/createButton"
+        android:id="@+id/usrList"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

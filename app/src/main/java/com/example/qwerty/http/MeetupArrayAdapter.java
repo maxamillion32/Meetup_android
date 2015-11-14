@@ -20,25 +20,31 @@ import java.util.ArrayList;
 public class MeetupArrayAdapter extends ArrayAdapter{
     // application context
     private Context context;
-    // phone data (names)
+
     private ArrayList<JSONObject> meetups;
     private static String TAG = MeetupArrayAdapter.class.getSimpleName();
 
 
-    // get application context and phones data to adapter
+
     public MeetupArrayAdapter(Context context, ArrayList<JSONObject> meetups) {
         super(context, R.layout.rowlayout, R.id.textView, meetups);
         this.context = context;
         this.meetups = meetups;
     }
 
+    @Override
+    public boolean isEnabled(int position)
+    {
+        return true;
+    }
+
     // populate every row in ListView
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // get row
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
-        // show phone name
+
         TextView nameField = (TextView) rowView.findViewById(R.id.rowTitleTxt);
         TextView descField = (TextView) rowView.findViewById(R.id.rowDescTxt);
         TextView usrCount = (TextView) rowView.findViewById(R.id.rowUsrCountTxt);
@@ -46,7 +52,9 @@ public class MeetupArrayAdapter extends ArrayAdapter{
             JSONObject meetup = meetups.get(position).getJSONObject("meeting");
 
             nameField.setText(meetup.getString("name"));
+            rowView.setTag(meetup.getString("_id"));
             descField.setText(meetup.getString("description"));
+
             if(meetup.getJSONArray("users").length() == 1)
                 usrCount.setText(meetup.getJSONArray("users").length() + " user");
             else
