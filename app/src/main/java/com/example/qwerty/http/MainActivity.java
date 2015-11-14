@@ -66,8 +66,6 @@ public class MainActivity extends Activity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        view.getTag().toString(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, MeetupOverviewActivity.class);
                 intent.putExtra("meetup", view.getTag().toString());
                 intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));

@@ -67,7 +67,7 @@ public class RequestCondenser {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
                 headers.put("charset", "utf-8");
                 return headers;

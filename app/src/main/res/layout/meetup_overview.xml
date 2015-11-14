@@ -16,7 +16,7 @@
         android:layout_height="0dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
-        android:id="@+id/descTxt"
+        android:id="@+id/meetupDesc"
         android:layout_weight="1.10" />
 
     <TextView
@@ -39,14 +39,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="can&apos;t make it"
-        android:id="@+id/deny" />
+        android:id="@+id/denyBtn" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
-            android:id="@+id/attendingTxt" />
+            android:id="@+id/usrCountTxt" />
     </LinearLayout>
     <ListView
         android:layout_width="match_parent"
