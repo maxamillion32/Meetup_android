@@ -43,7 +43,7 @@ public class MeetupOverviewActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meetup_overview);
-        
+
         extras = getIntent().getExtras();
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Please wait...");

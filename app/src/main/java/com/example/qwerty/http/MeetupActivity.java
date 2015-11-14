@@ -43,9 +43,11 @@ public class MeetupActivity extends Activity {
     TextView title;
     TextView desc;
     TextView invite;
-    //RequestCondenser req;
+    RequestCondenser inviteRequest;
+    RequestCondenser createRequest;
+    RequestCondenser editRequest;
     String uid;
-
+    Context ctx = this;
     ProgressDialog pDialog;
 
     private static String TAG = MeetupActivity.class.getSimpleName();
@@ -54,7 +56,6 @@ public class MeetupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_new);
-
         uid = getIntent().getExtras().getString("_id");
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
@@ -68,27 +69,84 @@ public class MeetupActivity extends Activity {
         desc = (TextView) findViewById(R.id.descTxt);
         title = (TextView) findViewById(R.id.titleTxt);
         invite = (TextView) findViewById(R.id.invTxt);
-       /* req.request(new RequestCondenser.MyCallback() {
+
+        inviteRequest = new RequestCondenser(
+                Request.Method.POST,
+                getString(R.string.apiUrl).concat("/meetup/invite"),
+                TAG,
+                ctx
+        );
+        createRequest = new RequestCondenser(
+                Request.Method.POST,
+                populateCreateRequestBody(),
+                getString(R.string.apiUrl).concat("/meetup/create"),
+                TAG,
+                ctx
+        );
+
+        editRequest = new RequestCondenser(
+                Request.Method.POST,
+                getString(R.string.apiUrl).concat("/meetup/edit"),
+                TAG,
+                ctx
+        );
+
+        createRequest.request(new RequestCondenser.ActionOnResponse() {
             @Override
-            public void callbackCall() {
-
+            public void responseCallBack(JSONObject response) {
+                Toast.makeText(getApplicationContext(),
+                        "Meetup successfully created!", Toast.LENGTH_SHORT).show();
+                hidepDialog();
             }
-        });*/
-
-        makeCreateRequest();
+        });
 
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                makeEditRequest();
+                editRequest.setRequestBody(populateEditRequestBody());
+                editRequest.request(new RequestCondenser.ActionOnResponse() {
+                    @Override
+                    public void responseCallBack(JSONObject response) {
+                        Toast.makeText(getApplicationContext(),
+                                "Meetup successfully created!", Toast.LENGTH_SHORT).show();
+                        hidepDialog();
+                    }
+                });
             }
         });
 
         invBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inviteRequestCaller();
+                inviteRequest.setRequestBody(populateInviteRequestBody());
+                inviteRequest.request(new RequestCondenser.ActionOnResponse() {
+                    @Override
+                    public void responseCallBack(JSONObject response) {
+                        try {
+                            users = response.getJSONArray("users");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        userList.clear();
+
+                        for (int i = 0; i < users.length(); ++i) {
+                            try {
+                                userList.add(users.getJSONObject(i));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        // add data to ArrayAdapter
+                        UserArrayAdapter adapter = new UserArrayAdapter(ctx, userList);
+                        // set data to listView with adapter
+                        listview.setAdapter(adapter);
+
+                        // hide the progress dialog
+                        hidepDialog();
+                    }
+                });
             }
         });
     }
@@ -130,147 +188,5 @@ public class MeetupActivity extends Activity {
             e.printStackTrace();
         }
         return user;
-    }
-
-    private void makeEditRequest() {
-
-        showpDialog();
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getString(R.string.apiUrl).concat("/meetup/edit"),
-                populateEditRequestBody(), new Response.Listener<JSONObject>() {
-
-
-            @Override
-            public void onResponse(JSONObject response) {
-                if(response != null)
-                    Toast.makeText(getApplicationContext(),
-                        "Meetup successfully edited!", Toast.LENGTH_SHORT).show();
-                hidepDialog();
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                // hide the progress dialog
-                hidepDialog();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                return headers;
-            }
-        };
-
-        // Adding request to request queue
-        MySingleton.getInstance(this).addToRequestQueue(req);
-    }
-
-
-    private void makeCreateRequest() {
-
-        showpDialog();
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getString(R.string.apiUrl).concat("/meetup/create"),
-                populateCreateRequestBody(), new Response.Listener<JSONObject>() {
-
-
-            @Override
-            public void onResponse(JSONObject response) {
-                if(response != null)
-                    Toast.makeText(getApplicationContext(),
-                            "Meetup successfully created!", Toast.LENGTH_SHORT).show();
-                hidepDialog();
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                // hide the progress dialog
-                hidepDialog();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                return headers;
-            }
-        };
-
-        // Adding request to request queue
-        MySingleton.getInstance(this).addToRequestQueue(req);
-    }
-
-    private void makeInviteRequest(final Context context) {
-
-        showpDialog();
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getString(R.string.apiUrl).concat("/meetup/invite"),
-                populateInviteRequestBody(),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try {
-                            users = response.getJSONArray("users");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        userList.clear();
-
-                        for (int i = 0; i < users.length(); ++i) {
-                            try {
-                                userList.add(users.getJSONObject(i));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        // add data to ArrayAdapter
-                        UserArrayAdapter adapter = new UserArrayAdapter(context, userList);
-                        // set data to listView with adapter
-                        listview.setAdapter(adapter);
-
-                        // hide the progress dialog
-                        hidepDialog();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Log.d(TAG, "" + error.getMessage() + "," + error.toString());
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                return headers;
-            }
-        };
-        MySingleton.getInstance(this).addToRequestQueue(req);
-
-    }
-
-    private void inviteRequestCaller() {
-        makeInviteRequest(this);
     }
 }

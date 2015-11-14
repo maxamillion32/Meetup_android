@@ -21,38 +21,41 @@ import java.util.Map;
  * Created by qwerty on 14.11.2015.
  */
 public class RequestCondenser {
-    Request.Method reqMethod;
+    int reqMethod;
     JSONObject body;
     String url;
     String TAG;
     Context ctx;
 
-    public RequestCondenser(Request.Method method, JSONObject obj, String url, String TAG, Context ctx) {
+    public RequestCondenser(int method, String url, String TAG, Context ctx) {
         this.reqMethod = method;
-        this.body = obj;
         this.url = url;
         this.TAG = TAG;
         this.ctx = ctx;
     }
 
-    public void reqBodySetter(JSONObject body) {
+    public RequestCondenser(int method, JSONObject body, String url, String TAG, Context ctx) {
+        this.reqMethod = method;
+        this.body = body;
+        this.url = url;
+        this.TAG = TAG;
+        this.ctx = ctx;
+    }
+
+    public void setRequestBody(JSONObject body) {
         this.body = body;
     }
 
-    public void reqUrlSetter(String url) {
-        this.url = url;
+    interface ActionOnResponse {
+        void responseCallBack(JSONObject response);
     }
 
-    interface MyCallback {
-        void callbackCall();
-    }
-
-    public void request(final MyCallback cb) {
+    public void request(final ActionOnResponse cb) {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, body,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        cb.callbackCall();
+                        cb.responseCallBack(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
