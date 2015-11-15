@@ -69,7 +69,6 @@ public class MainActivity extends Activity {
 
         getMeetUps = new RequestCondenser(
                 Request.Method.POST,
-                getRequestData(),
                 getString(R.string.apiUrl).concat("/user/meetups"),
                 TAG,
                 ctx
@@ -124,7 +123,7 @@ public class MainActivity extends Activity {
 
         c = db.getActiveUser();
         c.moveToNext();
-
+        Log.d(TAG, c.getString(c.getColumnIndex("uid")));
         try {
             obj.put("_id", c.getString(c.getColumnIndex("uid")));
         } catch (JSONException e) {
@@ -134,6 +133,7 @@ public class MainActivity extends Activity {
     }
 
     private void sendRequest() {
+        getMeetUps.setRequestBody(getRequestData());
         getMeetUps.request(new RequestCondenser.ActionOnResponse() {
             @Override
             public void responseCallBack(JSONObject response) {
