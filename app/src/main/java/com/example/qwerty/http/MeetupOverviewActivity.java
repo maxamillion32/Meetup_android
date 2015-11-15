@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by qwerty on 12.11.2015.
@@ -42,6 +43,7 @@ public class MeetupOverviewActivity extends Activity {
     TextView userCount;
     RequestCondenser getDataRequest;
     RequestCondenser editAttendanceRequest;
+    JSONObject attendees = new JSONObject();
 
     ArrayList<JSONObject> userList = new ArrayList<>();
 
@@ -53,7 +55,6 @@ public class MeetupOverviewActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meetup_overview);
-
         attend = (Button) findViewById(R.id.attendBtn);
         turndown = (Button) findViewById(R.id.denyBtn);
         title = (TextView) findViewById(R.id.meetupTitle);
@@ -62,6 +63,7 @@ public class MeetupOverviewActivity extends Activity {
         listview = (ListView) findViewById(R.id.usrList);
 
         extras = getIntent().getExtras();
+
         getDataRequest = new RequestCondenser(
                 Request.Method.POST,
                 populatedGetRequestBody(),
@@ -85,6 +87,7 @@ public class MeetupOverviewActivity extends Activity {
                     e.printStackTrace();
                 }
                 generateUserList(response);
+                displayAttendees();
             }
         });
 
@@ -96,6 +99,7 @@ public class MeetupOverviewActivity extends Activity {
                     @Override
                     public void responseCallBack(JSONObject response) {
                         generateUserList(response);
+                        displayAttendees();
                     }
                 });
             }
@@ -109,6 +113,7 @@ public class MeetupOverviewActivity extends Activity {
                     @Override
                     public void responseCallBack(JSONObject response) {
                         generateUserList(response);
+                        displayAttendees();
                     }
                 });
             }
@@ -148,13 +153,25 @@ public class MeetupOverviewActivity extends Activity {
         }
 
         userList.clear();
+        try {
+            attendees.put("yesmen", 0);
+            attendees.put("total", 0);
+            for (int i = 0; i < users.length(); ++i) {
 
-        for (int i = 0; i < users.length(); ++i) {
-            try {
-                userList.add(users.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    if(
+                        Objects.equals(
+                            users.getJSONObject(i)
+                                    .getJSONArray("meetings")
+                                    .getJSONObject(0)
+                                    .getString("attendance")
+                        , "yes")
+                    )
+                        attendees.put("yesmen", attendees.getInt("yesmen")+1);
+                    userList.add(users.getJSONObject(i));
+                    attendees.put("total", attendees.getInt("total")+1);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         // add data to ArrayAdapter
@@ -162,6 +179,19 @@ public class MeetupOverviewActivity extends Activity {
         // set data to listView with adapter
         listview.setAdapter(adapter);
 
+    }
+
+    private void displayAttendees() {
+        try {
+            userCount
+                    .setText(
+                            attendees.getInt("yesmen") + "/" +
+                                    attendees.getInt("total") +
+                                    " Users attending"
+                );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

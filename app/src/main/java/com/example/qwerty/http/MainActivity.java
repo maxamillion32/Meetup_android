@@ -38,14 +38,22 @@ public class MainActivity extends Activity {
     Button meetingCreation;
     Button btnMakeObjectRequest;
 
-    ProgressDialog pDialog;
     JSONArray meetUps;
     ArrayList<JSONObject> meetupList = new ArrayList<>();
     ListView listview;
     DBHelper db;
     Cursor c;
+    Context ctx = this;
+
+    RequestCondenser getMeetUps;
 
     private static String TAG = MainActivity.class.getSimpleName();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sendRequest();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +67,15 @@ public class MainActivity extends Activity {
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         meetingCreation = (Button) findViewById(R.id.createMeetButton);
 
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
+        getMeetUps = new RequestCondenser(
+                Request.Method.POST,
+                getRequestData(),
+                getString(R.string.apiUrl).concat("/user/meetups"),
+                TAG,
+                ctx
+        );
+
+        sendRequest();
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -74,17 +88,14 @@ public class MainActivity extends Activity {
         });
 
         meetingCreation.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 c = db.getActiveUser();
                 c.moveToNext();
-
                 // launch meetup activity
                 Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
                 intent.putExtra("_id", c.getString(c.getColumnIndex("uid")));
                 startActivity(intent);
-
             }
         });
 
@@ -95,8 +106,6 @@ public class MainActivity extends Activity {
                 //launch login activity
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-
-
             }
         });
 
@@ -104,10 +113,9 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                requestCaller();
+                sendRequest();
             }
         });
-        requestCaller();
     }
 
     private JSONObject getRequestData() {
@@ -125,16 +133,10 @@ public class MainActivity extends Activity {
             return obj;
     }
 
-    private void getMeetUps(final Context context) {
-        showpDialog();
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getString(R.string.apiUrl).concat("/user/meetups"),
-                getRequestData(), new Response.Listener<JSONObject>() {
-
-
+    private void sendRequest() {
+        getMeetUps.request(new RequestCondenser.ActionOnResponse() {
             @Override
-            public void onResponse(JSONObject response) {
-                hidepDialog();
+            public void responseCallBack(JSONObject response) {
                 try {
                     meetUps = response.getJSONArray("meetings");
                 } catch (JSONException e) {
@@ -151,47 +153,17 @@ public class MainActivity extends Activity {
                     }
                 }
                 // add data to ArrayAdapter
-                MeetupArrayAdapter adapter = new MeetupArrayAdapter(context, meetupList);
+                MeetupArrayAdapter adapter = new MeetupArrayAdapter(
+                                                ctx,
+                                                meetupList,
+                                                c.getString(c.getColumnIndex("uid")),
+                                                getString(R.string.apiUrl).concat("/user/attendance")
+                                            );
                 // set data to listView with adapter
                 listview.setAdapter(adapter);
-
             }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                // hide the progress dialog
-                hidepDialog();
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put( "charset", "utf-8");
-                return headers;
-            }
-        };
-        // Adding request to request queue
-        MySingleton.getInstance(this).addToRequestQueue(req);
-
+        });
     }
 
-    private void requestCaller() {
-        getMeetUps(this);
-    }
 
-    private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
-    }
-
-    private void hidepDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
-    }
 }
