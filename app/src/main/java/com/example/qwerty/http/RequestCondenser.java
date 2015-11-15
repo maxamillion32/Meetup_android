@@ -60,6 +60,7 @@ public class RequestCondenser {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "BODY: " + body);
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Log.d(TAG, "" + error.getMessage() + "," + error.toString());
             }

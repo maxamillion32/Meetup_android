@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ public class MeetupArrayAdapter extends ArrayAdapter{
     private Context context;
     private String uid;
     private RequestCondenser editAttendanceRequest;
+    private RequestCondenser deleteRequest;
     private JSONObject body = new JSONObject();
 
     private ArrayList<JSONObject> meetups;
@@ -41,11 +43,17 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         this.meetups = meetups;
         this.uid = uid;
         editAttendanceRequest = new RequestCondenser(
-                                    Request.Method.POST,
-                                    apiUrl,
-                                    TAG,
-                                    context
-                                );
+                Request.Method.POST,
+                apiUrl.concat("/user/attendance"),
+                TAG,
+                context
+        );
+        deleteRequest = new RequestCondenser(
+                Request.Method.POST,
+                apiUrl.concat("/meetup/delete"),
+                TAG,
+                context
+        );
     }
 
     @Override
@@ -64,13 +72,36 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         TextView nameField = (TextView) rowView.findViewById(R.id.rowTitleTxt);
         TextView descField = (TextView) rowView.findViewById(R.id.rowDescTxt);
         TextView usrCount = (TextView) rowView.findViewById(R.id.rowUsrCountTxt);
+        Button delete = (Button) rowView.findViewById(R.id.deleteBtn);
         final CheckBox attendance = (CheckBox) rowView.findViewById(R.id.checkBox);
+
         try {
             final JSONObject meetup = meetups.get(position).getJSONObject("meeting");
 
             nameField.setText(meetup.getString("name"));
             rowView.setTag(meetup.getString("_id"));
             descField.setText(meetup.getString("description"));
+
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteRequest.setRequestBody(deleteRequestBody(meetup));
+                    deleteRequest.request(new RequestCondenser.ActionOnResponse() {
+                        @Override
+                        public void responseCallBack(JSONObject response) {
+                            try {
+                                Toast.makeText(context,
+                                        response.getString("name") + " has been deleted",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            });
 
             attendance.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,6 +128,7 @@ public class MeetupArrayAdapter extends ArrayAdapter{
                     });
                 }
             });
+            Log.d(TAG, meetups.get(position).getString("attendance"));
 
             if(Objects.equals(meetups.get(position).getString("attendance"), "yes"))
                 attendance.setChecked(true);
@@ -128,4 +160,12 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         return body;
     }
 
+    private JSONObject deleteRequestBody(JSONObject meetup) {
+        try {
+            body.put("_id", meetup.getString("_id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
 }

@@ -154,10 +154,10 @@ public class MainActivity extends Activity {
                 }
                 // add data to ArrayAdapter
                 MeetupArrayAdapter adapter = new MeetupArrayAdapter(
-                                                ctx,
-                                                meetupList,
-                                                c.getString(c.getColumnIndex("uid")),
-                                                getString(R.string.apiUrl).concat("/user/attendance")
+                                                    ctx,
+                                                    meetupList,
+                                                    c.getString(c.getColumnIndex("uid")),
+                                                    getString(R.string.apiUrl)
                                             );
                 // set data to listView with adapter
                 listview.setAdapter(adapter);
