@@ -3,6 +3,7 @@ package com.example.qwerty.http;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,18 +34,20 @@ import java.util.Map;
  */
 public class MeetupActivity extends Activity {
 
-    JSONObject meeting = new JSONObject();
+    JSONObject meetup = new JSONObject();
     JSONObject uidJson = new JSONObject();
     JSONArray users = new JSONArray();
     ArrayList<JSONObject> userList = new ArrayList<>();
     ListView listview;
     Button createBtn;
+    Button deleteBtn;
     Button invBtn;
     TextView title;
     TextView desc;
     TextView invite;
     RequestCondenser inviteRequest;
     RequestCondenser createRequest;
+    RequestCondenser deleteRequest;
     RequestCondenser editRequest;
     String uid;
     Context ctx = this;
@@ -58,7 +61,7 @@ public class MeetupActivity extends Activity {
         uid = getIntent().getExtras().getString("_id");
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
-        createBtn = (Button) findViewById(R.id.createButton);
+        deleteBtn = (Button) findViewById(R.id.delBut);
 
         listview = (ListView) findViewById(R.id.usrList);
         desc = (TextView) findViewById(R.id.descTxt);
@@ -75,6 +78,14 @@ public class MeetupActivity extends Activity {
                 Request.Method.POST,
                 populateCreateRequestBody(),
                 getString(R.string.apiUrl).concat("/meetup/create"),
+                TAG,
+                ctx
+        );
+
+        deleteRequest = new RequestCondenser(
+                Request.Method.POST,
+                null,
+                getString(R.string.apiUrl).concat("/meetup/delete"),
                 TAG,
                 ctx
         );
@@ -104,6 +115,24 @@ public class MeetupActivity extends Activity {
                     public void responseCallBack(JSONObject response) {
                         Toast.makeText(getApplicationContext(),
                                 "Meetup successfully edited!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteRequest.request(new RequestCondenser.ActionOnResponse() {
+                    @Override
+                    public void responseCallBack(JSONObject response) {
+                        Intent intent = new Intent(MeetupActivity.this, MainActivity.class);
+                        try {
+                            intent.putExtra("name", response.getString("name"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
                     }
                 });
             }
@@ -158,12 +187,12 @@ public class MeetupActivity extends Activity {
 
     private JSONObject populateEditRequestBody () {
         try {
-            meeting.put("description", desc.getText().toString());
-            meeting.put("name", title.getText().toString());
+            meetup.put("description", desc.getText().toString());
+            meetup.put("name", title.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return meeting;
+        return meetup;
     }
 
     private JSONObject populateInviteRequestBody () {

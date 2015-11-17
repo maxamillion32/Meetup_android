@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     ListView listview;
     DBHelper db;
     Cursor c;
+    Intent intent;
     Context ctx = this;
 
     RequestCondenser getMeetUps;
@@ -61,60 +62,65 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         db = new DBHelper(this);
+        //db.clearDatabase();
+        if(!db.getAllUsers().moveToNext()) {
+            intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
-        listview = (ListView) findViewById(R.id.listView);
-        btnMakeObjectRequest = (Button) findViewById(R.id.btnObjRequest);
-        refreshBtn = (Button) findViewById(R.id.refreshBtn);
-        meetingCreation = (Button) findViewById(R.id.createMeetButton);
+            listview = (ListView) findViewById(R.id.listView);
+            btnMakeObjectRequest = (Button) findViewById(R.id.btnObjRequest);
+            refreshBtn = (Button) findViewById(R.id.refreshBtn);
+            meetingCreation = (Button) findViewById(R.id.createMeetButton);
 
-        getMeetUps = new RequestCondenser(
-                Request.Method.POST,
-                getString(R.string.apiUrl).concat("/user/meetups"),
-                TAG,
-                ctx
-        );
+            getMeetUps = new RequestCondenser(
+                    Request.Method.POST,
+                    getString(R.string.apiUrl).concat("/user/meetups"),
+                    TAG,
+                    ctx
+            );
 
-        sendRequest();
+            sendRequest();
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, MeetupOverviewActivity.class);
-                intent.putExtra("meetup", view.getTag().toString());
-                intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
-                startActivity(intent);
-            }
-        });
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(MainActivity.this, MeetupOverviewActivity.class);
+                    intent.putExtra("meetup", view.getTag().toString());
+                    intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
+                    startActivity(intent);
+                }
+            });
 
-        meetingCreation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                c = db.getActiveUser();
-                c.moveToNext();
-                // launch meetup activity
-                Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
-                intent.putExtra("_id", c.getString(c.getColumnIndex("uid")));
-                startActivity(intent);
-            }
-        });
+            meetingCreation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    c = db.getActiveUser();
+                    c.moveToNext();
+                    // launch meetup activity
+                    Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
+                    intent.putExtra("_id", c.getString(c.getColumnIndex("uid")));
+                    startActivity(intent);
+                }
+            });
 
-        btnMakeObjectRequest.setOnClickListener(new View.OnClickListener() {
+            btnMakeObjectRequest.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                //launch login activity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+                @Override
+                public void onClick(View v) {
+                    //launch login activity
+                    intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
 
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            refreshBtn.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                sendRequest();
-            }
-        });
+                @Override
+                public void onClick(View v) {
+                    sendRequest();
+                }
+            });
     }
 
     private JSONObject getRequestData() {
@@ -123,7 +129,6 @@ public class MainActivity extends Activity {
 
         c = db.getActiveUser();
         c.moveToNext();
-        Log.d(TAG, c.getString(c.getColumnIndex("uid")));
         try {
             obj.put("_id", c.getString(c.getColumnIndex("uid")));
         } catch (JSONException e) {

@@ -76,7 +76,7 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         final CheckBox attendance = (CheckBox) rowView.findViewById(R.id.checkBox);
 
         try {
-            final JSONObject meetup = meetups.get(position).getJSONObject("meeting");
+            final JSONObject meetup = meetups.get(position).getJSONObject("_id");
 
             nameField.setText(meetup.getString("name"));
             rowView.setTag(meetup.getString("_id"));
