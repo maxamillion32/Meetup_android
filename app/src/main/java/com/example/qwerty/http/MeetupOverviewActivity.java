@@ -44,6 +44,7 @@ public class MeetupOverviewActivity extends Activity {
     RequestCondenser getDataRequest;
     RequestCondenser editAttendanceRequest;
     JSONObject attendees = new JSONObject();
+    UserListFragment frg;
 
     ArrayList<JSONObject> userList = new ArrayList<>();
 
@@ -61,6 +62,7 @@ public class MeetupOverviewActivity extends Activity {
         desc = (TextView) findViewById(R.id.meetupDesc);
         userCount = (TextView) findViewById(R.id.usrCountTxt);
         listview = (ListView) findViewById(R.id.usrList);
+        frg = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
         extras = getIntent().getExtras();
 

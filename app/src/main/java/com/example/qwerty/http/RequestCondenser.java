@@ -2,6 +2,7 @@ package com.example.qwerty.http;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -60,7 +61,6 @@ public class RequestCondenser {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "BODY: " + body);
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Log.d(TAG, "" + error.getMessage() + "," + error.toString());
             }

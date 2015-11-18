@@ -45,6 +45,7 @@ public class MeetupActivity extends Activity {
     TextView title;
     TextView desc;
     TextView invite;
+    UserListFragment frg;
     RequestCondenser inviteRequest;
     RequestCondenser createRequest;
     RequestCondenser deleteRequest;
@@ -62,11 +63,11 @@ public class MeetupActivity extends Activity {
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
         deleteBtn = (Button) findViewById(R.id.delBut);
-
         listview = (ListView) findViewById(R.id.usrList);
         desc = (TextView) findViewById(R.id.descTxt);
         title = (TextView) findViewById(R.id.titleTxt);
         invite = (TextView) findViewById(R.id.invTxt);
+        frg = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
         inviteRequest = new RequestCondenser(
                 Request.Method.POST,
@@ -145,31 +146,7 @@ public class MeetupActivity extends Activity {
                 inviteRequest.request(new RequestCondenser.ActionOnResponse() {
                     @Override
                     public void responseCallBack(JSONObject response) {
-                        try {
-                            if (!response.isNull("users")) {
-
-                                users = response.getJSONArray("users");
-                                userList.clear();
-
-                                for (int i = 0; i < users.length(); ++i) {
-                                    try {
-                                        userList.add(users.getJSONObject(i));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                // add data to ArrayAdapter
-                                UserArrayAdapter adapter = new UserArrayAdapter(ctx, userList);
-                                // set data to listView with adapter
-                                listview.setAdapter(adapter);
-                            }
-                            else
-                                Toast.makeText(ctx,
-                                "No such user exists!", Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        frg.passDataToFragment(response);
                     }
                 });
             }

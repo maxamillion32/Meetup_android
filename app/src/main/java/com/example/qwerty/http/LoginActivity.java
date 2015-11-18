@@ -40,6 +40,7 @@ public class LoginActivity extends Activity {
     ProgressDialog pDialog;
     JSONObject requestData = new JSONObject();
 
+    Context ctx = this;
     DBHelper db;
     Cursor c;
 
@@ -65,7 +66,7 @@ public class LoginActivity extends Activity {
                 Request.Method.POST,
                 getString(R.string.apiUrl).concat("/user/entry"),
                 TAG,
-                this
+                ctx
         );
 
 
