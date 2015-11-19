@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -15,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by qwerty on 18.11.2015.
@@ -24,6 +26,8 @@ public class UserListFragment extends ListFragment {
     JSONArray users = new JSONArray();
     ArrayList<JSONObject> userList = new ArrayList<>();
     Activity container;
+    TextView userCounter;
+    JSONObject attendees = new JSONObject();
 
     @Override
     public void onAttach(Activity activity) {
@@ -31,14 +35,14 @@ public class UserListFragment extends ListFragment {
         container = activity;
     }
 
-    private void displayAttendees() {
+    public void displayAttendees() {
         try {
-            container.findViewById(getActivity().)
-                    .setText(
-                            attendees.getInt("yesmen") + "/" +
-                                    attendees.getInt("total") +
-                                    " Users attending"
-                    );
+            userCounter = (TextView) container.findViewById(R.id.usrCountTxt);
+            userCounter.setText(
+                    attendees.getInt("yesmen") + "/" +
+                            attendees.getInt("total") +
+                            " Users attending"
+            );
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -46,29 +50,38 @@ public class UserListFragment extends ListFragment {
 
     public void passDataToFragment(JSONObject response) {
         try {
-                if (!response.isNull("users")) {
-
-                    users = response.getJSONArray("users");
-                    userList.clear();
-
-                    for (int i = 0; i < users.length(); ++i) {
-                        try {
-                            userList.add(users.getJSONObject(i));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    // add data to ArrayAdapter
-                    UserArrayAdapter adapter = new UserArrayAdapter(getActivity(), userList);
-                    // set data to listView with adapter
-                    setListAdapter(adapter);
-                } else
-                    Toast.makeText(getActivity(),
-                            "No such user exists!", Toast.LENGTH_SHORT).show();
+            users = response.getJSONArray("users");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        userList.clear();
+        try {
+            attendees.put("yesmen", 0);
+            attendees.put("total", 0);
+            for (int i = 0; i < users.length(); ++i) {
+
+                if(
+                    Objects.equals(
+                            users.getJSONObject(i)
+                                    .getJSONArray("meetings")
+                                        .getJSONObject(0)
+                                            .getString("attendance"), "yes"
+                    )
+                )
+                    attendees.put("yesmen", attendees.getInt("yesmen")+1);
+
+                userList.add(users.getJSONObject(i));
+                attendees.put("total", attendees.getInt("total")+1);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // add data to ArrayAdapter
+        UserArrayAdapter adapter = new UserArrayAdapter(getActivity(), userList);
+        // set data to listView with adapter
+        setListAdapter(adapter);
     }
 
     @Override

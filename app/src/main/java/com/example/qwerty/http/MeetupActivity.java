@@ -36,16 +36,13 @@ public class MeetupActivity extends Activity {
 
     JSONObject meetup = new JSONObject();
     JSONObject uidJson = new JSONObject();
-    JSONArray users = new JSONArray();
-    ArrayList<JSONObject> userList = new ArrayList<>();
-    ListView listview;
     Button createBtn;
     Button deleteBtn;
     Button invBtn;
     TextView title;
     TextView desc;
     TextView invite;
-    UserListFragment frg;
+    UserListFragment usersFragment;
     RequestCondenser inviteRequest;
     RequestCondenser createRequest;
     RequestCondenser deleteRequest;
@@ -63,11 +60,10 @@ public class MeetupActivity extends Activity {
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
         deleteBtn = (Button) findViewById(R.id.delBut);
-        listview = (ListView) findViewById(R.id.usrList);
         desc = (TextView) findViewById(R.id.descTxt);
         title = (TextView) findViewById(R.id.titleTxt);
         invite = (TextView) findViewById(R.id.invTxt);
-        frg = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
+        usersFragment = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
         inviteRequest = new RequestCondenser(
                 Request.Method.POST,
@@ -146,7 +142,7 @@ public class MeetupActivity extends Activity {
                 inviteRequest.request(new RequestCondenser.ActionOnResponse() {
                     @Override
                     public void responseCallBack(JSONObject response) {
-                        frg.passDataToFragment(response);
+                        usersFragment.passDataToFragment(response);
                     }
                 });
             }
