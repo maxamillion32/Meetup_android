@@ -1,42 +1,29 @@
 package com.example.qwerty.http;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class MainActivity extends Activity {
 
     Button refreshBtn;
     Button meetingCreation;
-    Button btnMakeObjectRequest;
+    Button createUser;
 
     JSONArray meetUps;
     ArrayList<JSONObject> meetupList = new ArrayList<>();
@@ -69,7 +56,7 @@ public class MainActivity extends Activity {
         }
 
         listview = (ListView) findViewById(R.id.listView);
-        btnMakeObjectRequest = (Button) findViewById(R.id.btnObjRequest);
+        createUser = (Button) findViewById(R.id.createUserBtn);
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         meetingCreation = (Button) findViewById(R.id.createMeetButton);
 
@@ -99,12 +86,12 @@ public class MainActivity extends Activity {
                 c.moveToNext();
                 // launch meetup activity
                 Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
-                intent.putExtra("_id", c.getString(c.getColumnIndex("uid")));
+                intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
                 startActivity(intent);
             }
         });
 
-        btnMakeObjectRequest.setOnClickListener(new View.OnClickListener() {
+        createUser.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {

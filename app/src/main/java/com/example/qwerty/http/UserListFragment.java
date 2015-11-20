@@ -39,9 +39,10 @@ public class UserListFragment extends ListFragment {
         try {
             userCounter = (TextView) container.findViewById(R.id.usrCountTxt);
             userCounter.setText(
-                    attendees.getInt("yesmen") + "/" +
-                            attendees.getInt("total") +
-                            " Users attending"
+                    String.format("%d/%d Users attending",
+                            attendees.getInt("yesmen"),
+                            attendees.getInt("total")
+                    )
             );
         } catch (JSONException e) {
             e.printStackTrace();

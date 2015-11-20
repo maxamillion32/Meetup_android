@@ -1,7 +1,9 @@
 package com.example.qwerty.http;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +31,6 @@ public class MeetupArrayAdapter extends ArrayAdapter{
     private Context context;
     private String uid;
     private RequestCondenser editAttendanceRequest;
-    private RequestCondenser deleteRequest;
     private JSONObject body = new JSONObject();
 
     private ArrayList<JSONObject> meetups;
@@ -45,12 +46,6 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         editAttendanceRequest = new RequestCondenser(
                 Request.Method.POST,
                 apiUrl.concat("/user/attendance"),
-                TAG,
-                context
-        );
-        deleteRequest = new RequestCondenser(
-                Request.Method.POST,
-                apiUrl.concat("/meetup/delete"),
                 TAG,
                 context
         );
@@ -72,7 +67,7 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         TextView nameField = (TextView) rowView.findViewById(R.id.rowTitleTxt);
         TextView descField = (TextView) rowView.findViewById(R.id.rowDescTxt);
         TextView usrCount = (TextView) rowView.findViewById(R.id.rowUsrCountTxt);
-        Button delete = (Button) rowView.findViewById(R.id.deleteBtn);
+        Button edit = (Button) rowView.findViewById(R.id.editBtn);
         final CheckBox attendance = (CheckBox) rowView.findViewById(R.id.checkBox);
 
         try {
@@ -83,30 +78,29 @@ public class MeetupArrayAdapter extends ArrayAdapter{
             descField.setText(meetup.getString("description"));
 
 
-            delete.setOnClickListener(new View.OnClickListener() {
+            edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    deleteRequest.setRequestBody(deleteRequestBody(meetup));
-                    deleteRequest.request(new RequestCondenser.ActionOnResponse() {
-                        @Override
-                        public void responseCallBack(JSONObject response) {
-                            try {
-                                Toast.makeText(context,
-                                        response.getString("name") + " has been deleted",
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    Intent intent = new Intent(context, MeetupActivity.class);
+                    Bundle extras = new Bundle();
+                    try {
+                        extras.putString("_id", meetup.getString("_id"));
+                        extras.putString("name", meetup.getString("name"));
+                        extras.putString("description", meetup.getString("description"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    intent.putExtras(extras);
+                    context.startActivity(intent);
+
+
                 }
             });
 
             attendance.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!attendance.isChecked())
+                    if (!attendance.isChecked())
                         editAttendanceRequest.setRequestBody(attendanceEditRequestBody(false, meetup));
                     else
                         editAttendanceRequest.setRequestBody(attendanceEditRequestBody(true, meetup));
@@ -115,11 +109,11 @@ public class MeetupArrayAdapter extends ArrayAdapter{
                         public void responseCallBack(JSONObject response) {
                             try {
                                 Toast.makeText(context,
-                                    "Your attendance status on " +
-                                    meetup.getString("name") +
-                                    " has been changed to '" +
-                                    body.getString("attendance") +
-                                    "'", Toast.LENGTH_LONG
+                                        "Your attendance status on " +
+                                                meetup.getString("name") +
+                                                " has been changed to '" +
+                                                body.getString("attendance") +
+                                                "'", Toast.LENGTH_LONG
                                 ).show();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -128,16 +122,15 @@ public class MeetupArrayAdapter extends ArrayAdapter{
                     });
                 }
             });
-            Log.d(TAG, meetups.get(position).getString("attendance"));
 
             if(Objects.equals(meetups.get(position).getString("attendance"), "yes"))
                 attendance.setChecked(true);
             else
                 attendance.setChecked(false);
             if(meetup.getJSONArray("users").length() == 1)
-                usrCount.setText(meetup.getJSONArray("users").length() + " user");
+                usrCount.setText(String.format("%d user", meetup.getJSONArray("users").length()));
             else
-                usrCount.setText(meetup.getJSONArray("users").length() + " users");
+                usrCount.setText(String.format("%d users", meetup.getJSONArray("users").length()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -154,15 +147,6 @@ public class MeetupArrayAdapter extends ArrayAdapter{
                 body.put("attendance", "yes");
             else
                 body.put("attendance", "no");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return body;
-    }
-
-    private JSONObject deleteRequestBody(JSONObject meetup) {
-        try {
-            body.put("_id", meetup.getString("_id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

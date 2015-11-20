@@ -52,6 +52,7 @@ public class RequestCondenser {
     }
 
     public void request(final ActionOnResponse cb) {
+        Log.d(TAG, url + body);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, body,
                 new Response.Listener<JSONObject>() {
                     @Override

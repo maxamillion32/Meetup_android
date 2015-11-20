@@ -34,8 +34,7 @@ public class MeetupOverviewActivity extends Activity {
 
     Bundle extras;
     JSONObject meetup = new JSONObject();
-    JSONArray users = new JSONArray();
-    ListView listview;
+
     Button attend;
     Button turndown;
     TextView title;
@@ -44,8 +43,6 @@ public class MeetupOverviewActivity extends Activity {
     RequestCondenser getDataRequest;
     RequestCondenser editAttendanceRequest;
     UserListFragment usersFragment;
-
-    ArrayList<JSONObject> userList = new ArrayList<>();
 
     Context ctx = this;
 

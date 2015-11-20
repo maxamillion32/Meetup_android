@@ -34,8 +34,8 @@ import java.util.Map;
  */
 public class MeetupActivity extends Activity {
 
+    JSONObject idJson = new JSONObject();
     JSONObject meetup = new JSONObject();
-    JSONObject uidJson = new JSONObject();
     Button createBtn;
     Button deleteBtn;
     Button invBtn;
@@ -47,7 +47,7 @@ public class MeetupActivity extends Activity {
     RequestCondenser createRequest;
     RequestCondenser deleteRequest;
     RequestCondenser editRequest;
-    String uid;
+    RequestCondenser getDataRequest;
     Context ctx = this;
 
     private static String TAG = MeetupActivity.class.getSimpleName();
@@ -56,7 +56,6 @@ public class MeetupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_new);
-        uid = getIntent().getExtras().getString("_id");
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
         deleteBtn = (Button) findViewById(R.id.delBut);
@@ -71,6 +70,15 @@ public class MeetupActivity extends Activity {
                 TAG,
                 ctx
         );
+
+        getDataRequest = new RequestCondenser(
+                Request.Method.POST,
+                populatedGetRequestBody(),
+                getString(R.string.apiUrl).concat("/meetup/get"),
+                TAG,
+                ctx
+        );
+
         createRequest = new RequestCondenser(
                 Request.Method.POST,
                 populateCreateRequestBody(),
@@ -81,7 +89,7 @@ public class MeetupActivity extends Activity {
 
         deleteRequest = new RequestCondenser(
                 Request.Method.POST,
-                null,
+                populatedDeleteRequestBody(),
                 getString(R.string.apiUrl).concat("/meetup/delete"),
                 TAG,
                 ctx
@@ -93,15 +101,6 @@ public class MeetupActivity extends Activity {
                 TAG,
                 ctx
         );
-
-        createRequest.request(new RequestCondenser.ActionOnResponse() {
-            @Override
-            public void responseCallBack(JSONObject response) {
-                Toast.makeText(getApplicationContext(),
-                        "Meetup successfully created!" +
-                        " Now to add content and people to it!", Toast.LENGTH_LONG).show();
-            }
-        });
 
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,19 +146,56 @@ public class MeetupActivity extends Activity {
                 });
             }
         });
+
+        if(getIntent().hasExtra("uid")) {
+            createRequest.request(new RequestCondenser.ActionOnResponse() {
+                @Override
+                public void responseCallBack(JSONObject response) {
+                    Toast.makeText(getApplicationContext(),
+                            "Meetup successfully created!" +
+                                    " Now to add content and people to it!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        else {
+            getDataRequest.setRequestBody(populatedGetRequestBody());
+            getDataRequest.request(new RequestCondenser.ActionOnResponse() {
+                @Override
+                public void responseCallBack(JSONObject response) {
+                    try {
+                        title.setText(response.getString("name"));
+                        desc.setText(response.getString("description"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    usersFragment.passDataToFragment(response);
+                }
+            });
+        }
+    }
+
+    private JSONObject populatedGetRequestBody() {
+        try {
+            idJson.put("_id", getIntent().getExtras().getString("_id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return idJson;
     }
 
     private JSONObject populateCreateRequestBody () {
         try {
-            return uidJson.put("_id", uid);
+            return idJson.put("_id", getIntent().getExtras().getString("uid"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return uidJson;
+        return idJson;
     }
 
     private JSONObject populateEditRequestBody () {
         try {
+            if(getIntent().hasExtra("_id"))
+                meetup.put("_id", getIntent().getExtras().getString("_id"));
             meetup.put("description", desc.getText().toString());
             meetup.put("name", title.getText().toString());
         } catch (JSONException e) {
@@ -168,13 +204,27 @@ public class MeetupActivity extends Activity {
         return meetup;
     }
 
+    //to be clear here, the _id stands for the meeting's _id to which the user will be invited.
     private JSONObject populateInviteRequestBody () {
         JSONObject user = new JSONObject();
         try {
+            if(getIntent().hasExtra("_id"))
+                user.put("_id", getIntent().getExtras().getString("_id"));
             user.put("_email", invite.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return user;
     }
-}
+
+    private JSONObject populatedDeleteRequestBody() {
+        if(getIntent().hasExtra("_id")) {
+            try {
+                idJson.put("_id", getIntent().getExtras().getString("_id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        return idJson;
+        } else return null;
+    }
+ }
