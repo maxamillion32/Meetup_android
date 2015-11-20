@@ -34,8 +34,7 @@ public class MeetupOverviewActivity extends Activity {
 
     Bundle extras;
     JSONObject meetup = new JSONObject();
-    JSONArray users = new JSONArray();
-    ListView listview;
+
     Button attend;
     Button turndown;
     TextView title;
@@ -43,9 +42,7 @@ public class MeetupOverviewActivity extends Activity {
     TextView userCount;
     RequestCondenser getDataRequest;
     RequestCondenser editAttendanceRequest;
-    JSONObject attendees = new JSONObject();
-
-    ArrayList<JSONObject> userList = new ArrayList<>();
+    UserListFragment usersFragment;
 
     Context ctx = this;
 
@@ -60,7 +57,7 @@ public class MeetupOverviewActivity extends Activity {
         title = (TextView) findViewById(R.id.meetupTitle);
         desc = (TextView) findViewById(R.id.meetupDesc);
         userCount = (TextView) findViewById(R.id.usrCountTxt);
-        listview = (ListView) findViewById(R.id.usrList);
+        usersFragment = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
         extras = getIntent().getExtras();
 
@@ -86,8 +83,8 @@ public class MeetupOverviewActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                generateUserList(response);
-                displayAttendees();
+                usersFragment.passDataToFragment(response);
+                usersFragment.displayAttendees();
             }
         });
 
@@ -98,8 +95,8 @@ public class MeetupOverviewActivity extends Activity {
                 editAttendanceRequest.request(new RequestCondenser.ActionOnResponse() {
                     @Override
                     public void responseCallBack(JSONObject response) {
-                        generateUserList(response);
-                        displayAttendees();
+                        usersFragment.passDataToFragment(response);
+                        usersFragment.displayAttendees();
                     }
                 });
             }
@@ -112,8 +109,8 @@ public class MeetupOverviewActivity extends Activity {
                 editAttendanceRequest.request(new RequestCondenser.ActionOnResponse() {
                     @Override
                     public void responseCallBack(JSONObject response) {
-                        generateUserList(response);
-                        displayAttendees();
+                        usersFragment.passDataToFragment(response);
+                        usersFragment.displayAttendees();
                     }
                 });
             }
@@ -141,57 +138,6 @@ public class MeetupOverviewActivity extends Activity {
             e.printStackTrace();
         }
         return meetup;
-    }
-
-
-
-    private void generateUserList(JSONObject response) {
-        try {
-            users = response.getJSONArray("users");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        userList.clear();
-        try {
-            attendees.put("yesmen", 0);
-            attendees.put("total", 0);
-            for (int i = 0; i < users.length(); ++i) {
-
-                    if(
-                        Objects.equals(
-                            users.getJSONObject(i)
-                                    .getJSONArray("meetings")
-                                    .getJSONObject(0)
-                                    .getString("attendance")
-                        , "yes")
-                    )
-                        attendees.put("yesmen", attendees.getInt("yesmen")+1);
-                    userList.add(users.getJSONObject(i));
-                    attendees.put("total", attendees.getInt("total")+1);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        // add data to ArrayAdapter
-        UserArrayAdapter adapter = new UserArrayAdapter(ctx, userList);
-        // set data to listView with adapter
-        listview.setAdapter(adapter);
-
-    }
-
-    private void displayAttendees() {
-        try {
-            userCount
-                    .setText(
-                            attendees.getInt("yesmen") + "/" +
-                                    attendees.getInt("total") +
-                                    " Users attending"
-                );
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
 }

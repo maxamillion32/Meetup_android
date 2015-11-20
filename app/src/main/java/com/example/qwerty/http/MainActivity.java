@@ -1,48 +1,36 @@
 package com.example.qwerty.http;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class MainActivity extends Activity {
 
     Button refreshBtn;
     Button meetingCreation;
-    Button btnMakeObjectRequest;
+    Button createUser;
 
     JSONArray meetUps;
     ArrayList<JSONObject> meetupList = new ArrayList<>();
     ListView listview;
     DBHelper db;
     Cursor c;
+    Intent intent;
     Context ctx = this;
 
     RequestCondenser getMeetUps;
@@ -61,15 +49,19 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         db = new DBHelper(this);
+        if (!db.getAllUsers().moveToNext()) {
+            db.getAllUsers().moveToPrevious();
+            intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         listview = (ListView) findViewById(R.id.listView);
-        btnMakeObjectRequest = (Button) findViewById(R.id.btnObjRequest);
+        createUser = (Button) findViewById(R.id.createUserBtn);
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         meetingCreation = (Button) findViewById(R.id.createMeetButton);
 
         getMeetUps = new RequestCondenser(
                 Request.Method.POST,
-                getRequestData(),
                 getString(R.string.apiUrl).concat("/user/meetups"),
                 TAG,
                 ctx
@@ -94,28 +86,28 @@ public class MainActivity extends Activity {
                 c.moveToNext();
                 // launch meetup activity
                 Intent intent = new Intent(MainActivity.this, MeetupActivity.class);
-                intent.putExtra("_id", c.getString(c.getColumnIndex("uid")));
+                intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
                 startActivity(intent);
             }
         });
 
-        btnMakeObjectRequest.setOnClickListener(new View.OnClickListener() {
+        createUser.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 //launch login activity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
 
         refreshBtn.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                sendRequest();
-            }
-        });
+                @Override
+                public void onClick(View v) {
+                    sendRequest();
+                }
+            });
     }
 
     private JSONObject getRequestData() {
@@ -124,7 +116,6 @@ public class MainActivity extends Activity {
 
         c = db.getActiveUser();
         c.moveToNext();
-
         try {
             obj.put("_id", c.getString(c.getColumnIndex("uid")));
         } catch (JSONException e) {
@@ -134,6 +125,7 @@ public class MainActivity extends Activity {
     }
 
     private void sendRequest() {
+        getMeetUps.setRequestBody(getRequestData());
         getMeetUps.request(new RequestCondenser.ActionOnResponse() {
             @Override
             public void responseCallBack(JSONObject response) {
@@ -154,10 +146,10 @@ public class MainActivity extends Activity {
                 }
                 // add data to ArrayAdapter
                 MeetupArrayAdapter adapter = new MeetupArrayAdapter(
-                                                ctx,
-                                                meetupList,
-                                                c.getString(c.getColumnIndex("uid")),
-                                                getString(R.string.apiUrl).concat("/user/attendance")
+                                                    ctx,
+                                                    meetupList,
+                                                    c.getString(c.getColumnIndex("uid")),
+                                                    getString(R.string.apiUrl)
                                             );
                 // set data to listView with adapter
                 listview.setAdapter(adapter);

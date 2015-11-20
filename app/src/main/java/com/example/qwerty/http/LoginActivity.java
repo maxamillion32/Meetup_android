@@ -2,6 +2,8 @@ package com.example.qwerty.http;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
@@ -37,8 +39,12 @@ public class LoginActivity extends Activity {
     EditText uNameField;
     ProgressDialog pDialog;
     JSONObject requestData = new JSONObject();
+
+    Context ctx = this;
     DBHelper db;
     Cursor c;
+
+    RequestCondenser SignInOrSignUp;
 
     private static String TAG = LoginActivity.class.getSimpleName();
 
@@ -56,23 +62,47 @@ public class LoginActivity extends Activity {
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
 
+        SignInOrSignUp = new RequestCondenser(
+                Request.Method.POST,
+                getString(R.string.apiUrl).concat("/user/entry"),
+                TAG,
+                ctx
+        );
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makeRequest();
+                SignInOrSignUp.setRequestBody(populateRequestData());
+                SignInOrSignUp.request(new RequestCondenser.ActionOnResponse() {
+                    @Override
+                    public void responseCallBack(JSONObject response) {
+                        try {
+                            c = db.getUser(response.getString("_id"));
+                            if (!c.moveToNext())
+                                db.setData(response.getString("_id"));
+                            c = db.getAllUsers();
+                            String asd = "";
+                            if (c.isBeforeFirst())
+                                c.moveToNext();
+                            while (!c.isAfterLast()) {
+                                asd += " uid:  " + c.getString(c.getColumnIndex("uid"));
+                                asd += " default:  " + c.getString(c.getColumnIndex("defaultAccount"));
+                                c.moveToNext();
+                            }
+                            c.close();
+                            responseSpace.setText(asd);
+                            if(response.has("_id")) {
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
-    }
-
-    private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
-    }
-
-    private void hidepDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
     }
 
     private JSONObject populateRequestData () {
@@ -84,67 +114,6 @@ public class LoginActivity extends Activity {
         }
         return requestData;
     }
-
-
-    private void makeRequest() {
-        showpDialog();
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                getString(R.string.apiUrl).concat("/userentry"),
-                populateRequestData(), new Response.Listener<JSONObject>() {
-
-
-            @Override
-            public void onResponse(JSONObject response) {
-                //db.clearDatabase();
-                hidepDialog();
-                try {
-                    c = db.getUser(response.getString("_id"));
-                    if (!c.moveToNext())
-                        db.setData(response.getString("_id"));
-                    c = db.getAllUsers();
-                    String asd = "";
-                    if (c.isBeforeFirst())
-                        c.moveToNext();
-                    while (!c.isAfterLast()) {
-                        asd += " uid:  " + c.getString(c.getColumnIndex("uid"));
-                        asd += " default:  " + c.getString(c.getColumnIndex("defaultAccount"));
-                        c.moveToNext();
-                    }
-                    c.close();
-                    responseSpace.setText(asd);
-
-                    //Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                    //intent.putExtra("meetings", meetings.toString());
-                    //startActivity(intent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                // hide the progress dialog
-                hidepDialog();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put( "charset", "utf-8");
-                return headers;
-            }
-        };
-
-        // Adding request to request queue
-        MySingleton.getInstance(this).addToRequestQueue(req);
-    }
-
 }
 
 

@@ -2,6 +2,7 @@ package com.example.qwerty.http;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -51,6 +52,7 @@ public class RequestCondenser {
     }
 
     public void request(final ActionOnResponse cb) {
+        Log.d(TAG, url + body);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, body,
                 new Response.Listener<JSONObject>() {
                     @Override

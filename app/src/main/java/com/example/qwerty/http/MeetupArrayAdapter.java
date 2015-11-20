@@ -1,12 +1,15 @@
 package com.example.qwerty.http;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,11 +44,11 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         this.meetups = meetups;
         this.uid = uid;
         editAttendanceRequest = new RequestCondenser(
-                                    Request.Method.POST,
-                                    apiUrl,
-                                    TAG,
-                                    context
-                                );
+                Request.Method.POST,
+                apiUrl.concat("/user/attendance"),
+                TAG,
+                context
+        );
     }
 
     @Override
@@ -64,18 +67,40 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         TextView nameField = (TextView) rowView.findViewById(R.id.rowTitleTxt);
         TextView descField = (TextView) rowView.findViewById(R.id.rowDescTxt);
         TextView usrCount = (TextView) rowView.findViewById(R.id.rowUsrCountTxt);
+        Button edit = (Button) rowView.findViewById(R.id.editBtn);
         final CheckBox attendance = (CheckBox) rowView.findViewById(R.id.checkBox);
+
         try {
-            final JSONObject meetup = meetups.get(position).getJSONObject("meeting");
+            final JSONObject meetup = meetups.get(position).getJSONObject("_id");
 
             nameField.setText(meetup.getString("name"));
             rowView.setTag(meetup.getString("_id"));
             descField.setText(meetup.getString("description"));
 
+
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, MeetupActivity.class);
+                    Bundle extras = new Bundle();
+                    try {
+                        extras.putString("_id", meetup.getString("_id"));
+                        extras.putString("name", meetup.getString("name"));
+                        extras.putString("description", meetup.getString("description"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    intent.putExtras(extras);
+                    context.startActivity(intent);
+
+
+                }
+            });
+
             attendance.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!attendance.isChecked())
+                    if (!attendance.isChecked())
                         editAttendanceRequest.setRequestBody(attendanceEditRequestBody(false, meetup));
                     else
                         editAttendanceRequest.setRequestBody(attendanceEditRequestBody(true, meetup));
@@ -84,11 +109,11 @@ public class MeetupArrayAdapter extends ArrayAdapter{
                         public void responseCallBack(JSONObject response) {
                             try {
                                 Toast.makeText(context,
-                                    "Your attendance status on " +
-                                    meetup.getString("name") +
-                                    " has been changed to '" +
-                                    body.getString("attendance") +
-                                    "'", Toast.LENGTH_LONG
+                                        "Your attendance status on " +
+                                                meetup.getString("name") +
+                                                " has been changed to '" +
+                                                body.getString("attendance") +
+                                                "'", Toast.LENGTH_LONG
                                 ).show();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -103,9 +128,9 @@ public class MeetupArrayAdapter extends ArrayAdapter{
             else
                 attendance.setChecked(false);
             if(meetup.getJSONArray("users").length() == 1)
-                usrCount.setText(meetup.getJSONArray("users").length() + " user");
+                usrCount.setText(String.format("%d user", meetup.getJSONArray("users").length()));
             else
-                usrCount.setText(meetup.getJSONArray("users").length() + " users");
+                usrCount.setText(String.format("%d users", meetup.getJSONArray("users").length()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -127,5 +152,4 @@ public class MeetupArrayAdapter extends ArrayAdapter{
         }
         return body;
     }
-
 }
