@@ -1,0 +1,86 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Date"
+        android:id="@+id/button_startDate"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/button_endDate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Start Date: "
+        android:id="@+id/textView_startDate"
+        android:layout_below="@+id/textView_startTime"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Date"
+        android:id="@+id/button_endDate"
+        android:layout_marginTop="99dp"
+        android:layout_below="@+id/button_startDate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Start Time: "
+        android:id="@+id/textView_startTime"
+        android:layout_marginTop="80dp"
+        android:layout_below="@+id/button_endDate"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Time"
+        android:id="@+id/button_startTime"
+        android:layout_below="@+id/button_startDate"
+        android:layout_alignEnd="@+id/textView_startDate" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Time"
+        android:id="@+id/button_endTime"
+        android:layout_below="@+id/button_endDate"
+        android:layout_alignEnd="@+id/textView_endDate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="End Time:"
+        android:id="@+id/textView_endTime"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView_startDate"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="End Date:"
+        android:id="@+id/textView_endDate"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView_endTime"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:id="@+id/done_button"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/textView_startTime" />
+</RelativeLayout>

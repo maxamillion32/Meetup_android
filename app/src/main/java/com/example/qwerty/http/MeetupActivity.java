@@ -1,33 +1,18 @@
 package com.example.qwerty.http;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by qwerty on 4.11.2015.
@@ -36,9 +21,12 @@ public class MeetupActivity extends Activity {
 
     JSONObject idJson = new JSONObject();
     JSONObject meetup = new JSONObject();
+    JSONObject date;
+    private final int SHOW_CALCULATE_ACTIVITY = 1;
     Button createBtn;
     Button deleteBtn;
     Button invBtn;
+    Button dateBtn;
     TextView title;
     TextView desc;
     TextView invite;
@@ -59,6 +47,7 @@ public class MeetupActivity extends Activity {
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
         deleteBtn = (Button) findViewById(R.id.delBut);
+        dateBtn = (Button) findViewById(R.id.dateButton);
         desc = (TextView) findViewById(R.id.descTxt);
         title = (TextView) findViewById(R.id.titleTxt);
         invite = (TextView) findViewById(R.id.invTxt);
@@ -78,8 +67,19 @@ public class MeetupActivity extends Activity {
                 TAG,
                 ctx
         );
+        dateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        createRequest = new RequestCondenser(
+                // launch dates activity
+                Intent intent = new Intent(MeetupActivity.this, DateActivity.class);
+             //   intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
+                startActivityForResult(intent, SHOW_CALCULATE_ACTIVITY);
+            }
+        });
+
+
+            createRequest = new RequestCondenser(
                 Request.Method.POST,
                 populateCreateRequestBody(),
                 getString(R.string.apiUrl).concat("/meetup/create"),
@@ -173,7 +173,19 @@ public class MeetupActivity extends Activity {
             });
         }
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == SHOW_CALCULATE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            try {
+                date = new JSONObject(extras.getString("json"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
+
+        }
+    }
     private JSONObject populatedGetRequestBody() {
         try {
             idJson.put("_id", getIntent().getExtras().getString("_id"));
