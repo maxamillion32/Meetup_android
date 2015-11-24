@@ -27,6 +27,13 @@ public class DateActivity extends Activity {
     JSONObject jsonDateTo = new JSONObject();
     JSONObject jsonTimeFrom = new JSONObject();
     JSONObject jsonDateFrom = new JSONObject();
+
+    Button startDateButton;
+    Button endDateButton;
+    Button startTimeButton;
+    Button endTimeButton;
+    Button doneButton;
+
     String str = "";
 
     @Override
@@ -36,7 +43,7 @@ public class DateActivity extends Activity {
 
 
         // START DATE
-        Button startDateButton = (Button)findViewById(R.id.button_startDate);
+        startDateButton = (Button)findViewById(R.id.button_startDate);
         startDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,7 +53,7 @@ public class DateActivity extends Activity {
             }
         });
         // END DATE
-        Button endDateButton = (Button)findViewById(R.id.button_endDate);
+        endDateButton = (Button)findViewById(R.id.button_endDate);
         endDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +63,7 @@ public class DateActivity extends Activity {
             }
         });
         // START TIME
-        Button startTimeButton = (Button)findViewById(R.id.button_startTime);
+        startTimeButton = (Button)findViewById(R.id.button_startTime);
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +74,7 @@ public class DateActivity extends Activity {
 
         });
         // END TIME
-        Button endTimeButton = (Button)findViewById(R.id.button_endTime);
+        endTimeButton = (Button)findViewById(R.id.button_endTime);
         endTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,25 +86,19 @@ public class DateActivity extends Activity {
         });
 
         // DONE BUTTON
-        Button doneButton = (Button)findViewById(R.id.done_button);
-        endTimeButton.setOnClickListener(new View.OnClickListener() {
+        doneButton = (Button)findViewById(R.id.done_button);
+        doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            someMethod();
+                Intent intent = new Intent();
+                intent.putExtra("json", jsonAll.toString());
+                setResult(RESULT_OK,intent);
+                finish();
             }
 
         });
-
-
-
     } //onCreate
 
-    public void someMethod() {
-        Intent intent = new Intent();
-        intent.putExtra("json", jsonAll.toString());
-        setResult(RESULT_OK,intent);
-        finish();
-    }
 
     TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
@@ -127,8 +128,6 @@ public class DateActivity extends Activity {
                     e.printStackTrace();
                 }
             }
-
-            Log.d(DateActivity.class.getSimpleName(), jsonAll.toString());
         }
     };
 

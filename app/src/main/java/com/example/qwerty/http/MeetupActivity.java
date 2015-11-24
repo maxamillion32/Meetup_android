@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,8 +22,8 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
 
     JSONObject idJson = new JSONObject();
     JSONObject meetup = new JSONObject();
-    JSONObject date;
-    private final int SHOW_CALCULATE_ACTIVITY = 1;
+    JSONObject date = new JSONObject();
+    private final int GET_DATE = 1;
     Button createBtn;
     Button deleteBtn;
     Button refreshBtn;
@@ -74,7 +75,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
                 // launch dates activity
                 Intent intent = new Intent(MeetupActivity.this, DateActivity.class);
                 //   intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
-                startActivityForResult(intent, SHOW_CALCULATE_ACTIVITY);
+                startActivityForResult(intent, GET_DATE);
             }
         });
 
@@ -105,19 +106,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDataRequest.setRequestBody(populatedGetRequestBody());
-                getDataRequest.request(new RequestCondenser.ActionOnResponse() {
-                    @Override
-                    public void responseCallBack(JSONObject response) {
-                        try {
-                            title.setText(response.getString("name"));
-                            desc.setText(response.getString("description"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        usersFragment.passDataToFragment(response);
-                    }
-                });
+                getData();
             }
         });
 
@@ -171,28 +160,17 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
                 }
             });
         } else {
-            getDataRequest.setRequestBody(populatedGetRequestBody());
-            getDataRequest.request(new RequestCondenser.ActionOnResponse() {
-                @Override
-                public void responseCallBack(JSONObject response) {
-                    try {
-                        title.setText(response.getString("name"));
-                        desc.setText(response.getString("description"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    usersFragment.passDataToFragment(response);
-                }
-            });
+            getData();
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SHOW_CALCULATE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+        if (requestCode == GET_DATE && resultCode == Activity.RESULT_OK) {
             Bundle extras = data.getExtras();
             try {
                 date = new JSONObject(extras.getString("json"));
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -232,11 +210,15 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         }
         return idJson;
     }
-
+    //the if-clause for the _id is a check on whether this editing session
+    //is an edit session or in fact a create session. I programmed the
+    //API to check for a meetup _id within the request body and to act accordingly.
     private JSONObject populateEditRequestBody () {
         try {
             if(getIntent().hasExtra("_id"))
                 meetup.put("_id", getIntent().getExtras().getString("_id"));
+            if(date.length() != 0)
+                meetup.put("date", date);
             meetup.put("description", desc.getText().toString());
             meetup.put("name", title.getText().toString());
         } catch (JSONException e) {
