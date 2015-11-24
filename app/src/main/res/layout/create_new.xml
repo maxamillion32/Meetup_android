@@ -31,19 +31,6 @@
         android:layout_gravity="center_horizontal"
         android:inputType="text" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="invite someone"
-        android:id="@+id/textView5" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/invTxt"
-        android:layout_gravity="center_horizontal" />
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,14 +46,14 @@
             android:layout_width="78dp"
             android:layout_height="wrap_content"
             android:text="refresh people"
-            android:id="@+id/button"
+            android:id="@+id/refreshBtn"
             android:layout_gravity="right"
             android:layout_weight="0.18" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="CREATE"
+            android:text="Edit"
             android:id="@+id/createButton"
             android:layout_weight="0.13" />
 

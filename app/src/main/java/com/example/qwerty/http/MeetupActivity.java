@@ -32,16 +32,16 @@ import java.util.Map;
 /**
  * Created by qwerty on 4.11.2015.
  */
-public class MeetupActivity extends Activity {
+public class MeetupActivity extends Activity implements InviteDialog.InviteListener {
 
     JSONObject idJson = new JSONObject();
     JSONObject meetup = new JSONObject();
     Button createBtn;
     Button deleteBtn;
+    Button refreshBtn;
     Button invBtn;
     TextView title;
     TextView desc;
-    TextView invite;
     UserListFragment usersFragment;
     RequestCondenser inviteRequest;
     RequestCondenser createRequest;
@@ -59,9 +59,9 @@ public class MeetupActivity extends Activity {
         invBtn = (Button) findViewById(R.id.invButton);
         createBtn = (Button) findViewById(R.id.createButton);
         deleteBtn = (Button) findViewById(R.id.delBut);
+        refreshBtn = (Button) findViewById(R.id.refreshBtn);
         desc = (TextView) findViewById(R.id.descTxt);
         title = (TextView) findViewById(R.id.titleTxt);
-        invite = (TextView) findViewById(R.id.invTxt);
         usersFragment = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
         inviteRequest = new RequestCondenser(
@@ -102,6 +102,25 @@ public class MeetupActivity extends Activity {
                 ctx
         );
 
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDataRequest.setRequestBody(populatedGetRequestBody());
+                getDataRequest.request(new RequestCondenser.ActionOnResponse() {
+                    @Override
+                    public void responseCallBack(JSONObject response) {
+                        try {
+                            title.setText(response.getString("name"));
+                            desc.setText(response.getString("description"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        usersFragment.passDataToFragment(response);
+                    }
+                });
+            }
+        });
+
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,13 +156,8 @@ public class MeetupActivity extends Activity {
         invBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inviteRequest.setRequestBody(populateInviteRequestBody());
-                inviteRequest.request(new RequestCondenser.ActionOnResponse() {
-                    @Override
-                    public void responseCallBack(JSONObject response) {
-                        usersFragment.passDataToFragment(response);
-                    }
-                });
+                InviteDialog invDialog = new InviteDialog();
+                invDialog.show(getFragmentManager(), "Invite people");
             }
         });
 
@@ -172,6 +186,22 @@ public class MeetupActivity extends Activity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onInvBtnClick(String invitee) {
+        inviteRequest.setRequestBody(populateInviteRequestBody(invitee));
+        inviteRequest.request(new RequestCondenser.ActionOnResponse() {
+            @Override
+            public void responseCallBack(JSONObject response) {
+                if(response.length() == 0)
+                    Toast.makeText(ctx,
+                        "Either no such user exists or is already a part of this meetup!",
+                        Toast.LENGTH_LONG).show();
+
+                usersFragment.passDataToFragment(response);
+            }
+        });
     }
 
     private JSONObject populatedGetRequestBody() {
@@ -205,12 +235,12 @@ public class MeetupActivity extends Activity {
     }
 
     //to be clear here, the _id stands for the meeting's _id to which the user will be invited.
-    private JSONObject populateInviteRequestBody () {
+    private JSONObject populateInviteRequestBody (String invitee) {
         JSONObject user = new JSONObject();
         try {
             if(getIntent().hasExtra("_id"))
                 user.put("_id", getIntent().getExtras().getString("_id"));
-            user.put("_email", invite.getText().toString());
+                user.put("_email", invitee);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -227,4 +257,20 @@ public class MeetupActivity extends Activity {
         return idJson;
         } else return null;
     }
- }
+
+    public void getData() {
+        getDataRequest.setRequestBody(populatedGetRequestBody());
+        getDataRequest.request(new RequestCondenser.ActionOnResponse() {
+            @Override
+            public void responseCallBack(JSONObject response) {
+                try {
+                    title.setText(response.getString("name"));
+                    desc.setText(response.getString("description"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                usersFragment.passDataToFragment(response);
+            }
+        });
+    }
+}
