@@ -31,6 +31,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     Button dateBtn;
     TextView title;
     TextView desc;
+    TextView dateTxt;
     UserListFragment usersFragment;
     RequestCondenser inviteRequest;
     RequestCondenser createRequest;
@@ -51,6 +52,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         dateBtn = (Button) findViewById(R.id.dateButton);
         desc = (TextView) findViewById(R.id.descTxt);
+        dateTxt = (TextView) findViewById(R.id.dateTxt);
         title = (TextView) findViewById(R.id.titleTxt);
         usersFragment = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
@@ -170,7 +172,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             Bundle extras = data.getExtras();
             try {
                 date = new JSONObject(extras.getString("json"));
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

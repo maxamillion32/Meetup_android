@@ -11,11 +11,13 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class DateActivity extends Activity {
     Calendar calendar = Calendar.getInstance();
@@ -41,44 +43,52 @@ public class DateActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dates);
 
-
-        // START DATE
+        endDateButton = (Button)findViewById(R.id.button_endDate);
         startDateButton = (Button)findViewById(R.id.button_startDate);
+        startTimeButton = (Button)findViewById(R.id.button_startTime);
+        endTimeButton = (Button)findViewById(R.id.button_endTime);
+        doneButton = (Button)findViewById(R.id.done_button);
+        // START DATE
+
         startDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(DateActivity.this, listener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(DateActivity.this, listener, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
                 display = (TextView) findViewById(R.id.textView_startDate);
                 str = "from";
             }
         });
         // END DATE
-        endDateButton = (Button)findViewById(R.id.button_endDate);
+
         endDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(DateActivity.this, listener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(DateActivity.this, listener, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
                 display = (TextView)findViewById(R.id.textView_endDate);
                 str = "to";
             }
         });
         // START TIME
-        startTimeButton = (Button)findViewById(R.id.button_startTime);
+
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(DateActivity.this, onTimeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                new TimePickerDialog(DateActivity.this, onTimeSetListener,
+                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
                 display = (TextView)findViewById(R.id.textView_startTime);
                 str = "from";
             }
 
         });
         // END TIME
-        endTimeButton = (Button)findViewById(R.id.button_endTime);
+
         endTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(DateActivity.this, onTimeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                new TimePickerDialog(DateActivity.this, onTimeSetListener,
+                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
                 display = (TextView)findViewById(R.id.textView_endTime);
                 str = "to";
             }
@@ -86,14 +96,27 @@ public class DateActivity extends Activity {
         });
 
         // DONE BUTTON
-        doneButton = (Button)findViewById(R.id.done_button);
+
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("json", jsonAll.toString());
-                setResult(RESULT_OK,intent);
-                finish();
+                if(
+                    (
+                        (jsonDateFrom.length() != 0 && jsonDateTo.length() != 0) ||
+                        (jsonDateFrom.length() == 0 && jsonDateTo.length() == 0)
+                    ) &&
+                    (jsonTimeFrom.length() != 0 && jsonTimeTo.length() != 0)
+                ) {
+                    Intent intent = new Intent();
+                    intent.putExtra("json", jsonAll.toString());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                else
+                    Toast.makeText(getApplicationContext(),
+                            "Not all of the required times and/or dates were set!",
+                            Toast.LENGTH_LONG)
+                        .show();
             }
 
         });
@@ -103,12 +126,11 @@ public class DateActivity extends Activity {
     TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            //   Toast.makeText(getApplicationContext(), "Alkamis KLO : "+hourOfDay+" / "+minute, Toast.LENGTH_SHORT).show();
-            display.setText(str+" : " + hourOfDay + ":" + minute);
+            display.setText(String.format(" %d:%d ", hourOfDay, minute));
 
 
 
-            if ( str == "from") {
+            if (Objects.equals(str, "from")) {
                 try {
                     jsonTimeFrom.put("mins", minute);
                     jsonTimeFrom.put("hrs", hourOfDay);
@@ -118,7 +140,7 @@ public class DateActivity extends Activity {
                     e.printStackTrace();
                 }
             }
-            if ( str == "to") {
+            if (Objects.equals(str, "to")) {
                 try {
                     jsonTimeTo.put("mins", minute);
                     jsonTimeTo.put("hrs", hourOfDay);
@@ -134,8 +156,8 @@ public class DateActivity extends Activity {
     DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            display.setText(str+" : " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-            if ( str == "from") {
+            display.setText(String.format(" %d/%d/%d ", dayOfMonth, monthOfYear + 1, year));
+            if (Objects.equals(str, "from")) {
 
                 try {
                     jsonDateFrom.put("d", dayOfMonth);
@@ -148,7 +170,7 @@ public class DateActivity extends Activity {
                 }
             } // endif
 
-            if ( str == "to") {
+            if (Objects.equals(str, "to")) {
 
                 try {
                     jsonDateTo.put("d", dayOfMonth);
