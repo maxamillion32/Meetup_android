@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:text="begins on"
+        android:id="@+id/button_startDate"
+        android:layout_marginTop="60dp" />
+
+    <Button
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:text="ends on"
+        android:id="@+id/button_endDate" />
+
+    <Button
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:text="begins at"
+        android:id="@+id/button_startTime" />
+
+    <Button
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:text="ends at"
+        android:id="@+id/button_endTime" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_startDate"
+            android:layout_gravity="center_horizontal"
+            android:text="from" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_startTime" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=" - "
+            android:id="@+id/date_line" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_endDate"
+            android:layout_gravity="center_horizontal"
+            android:text="to" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_endTime"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:id="@+id/done_button"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Here you can pick a time and date for Your meetup.You can default your meetup date to the current day by not setting any dates. However, the ending and beginning times are mandatory."
+        android:id="@+id/datepicker_info" />
+</LinearLayout>

@@ -5,27 +5,26 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name" >
+            android:name=".LoginActivity">
         </activity>
         <activity
-            android:name=".MeetupOverviewActivity"
-            android:label="@string/app_name" >
+            android:name=".MeetupOverviewActivity">
         </activity>
         <activity
-            android:name=".MeetupActivity"
-            android:label="@string/app_name" >
+            android:name=".MeetupActivity">
+        </activity>
+        <activity
+            android:name=".DateActivity">
+
         </activity>
     </application>
 

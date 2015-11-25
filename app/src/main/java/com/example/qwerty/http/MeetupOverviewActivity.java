@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,8 +23,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,6 +43,7 @@ public class MeetupOverviewActivity extends Activity {
     Button turndown;
     TextView title;
     TextView desc;
+    TextView date;
     TextView userCount;
     RequestCondenser getDataRequest;
     RequestCondenser editAttendanceRequest;
@@ -56,6 +61,7 @@ public class MeetupOverviewActivity extends Activity {
         turndown = (Button) findViewById(R.id.denyBtn);
         title = (TextView) findViewById(R.id.meetupTitle);
         desc = (TextView) findViewById(R.id.meetupDesc);
+        date = (TextView) findViewById(R.id.dateTxt);
         userCount = (TextView) findViewById(R.id.usrCountTxt);
         usersFragment = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
@@ -80,6 +86,7 @@ public class MeetupOverviewActivity extends Activity {
                 try {
                     title.setText(response.getString("name"));
                     desc.setText(response.getString("description"));
+                    date.setText(parseDate(response.getJSONObject("date"), "dd/MM/yyyy HH:mm"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -117,6 +124,22 @@ public class MeetupOverviewActivity extends Activity {
         });
 
     }
+
+    public String parseDate(JSONObject dateObj, String dateFormat) {
+        String textToShow = "";
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.getDefault());
+        try {
+            calendar.setTimeInMillis(dateObj.getLong("from"));
+            textToShow= formatter.format(calendar.getTime());
+            calendar.setTimeInMillis(dateObj.getLong("to"));
+            textToShow += " - " + formatter.format(calendar.getTime());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return textToShow;
+    }
+
     private JSONObject populatedGetRequestBody() {
         try {
             meetup.put("_id", extras.getString("meetup"));

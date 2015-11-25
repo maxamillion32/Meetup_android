@@ -2,14 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="title it"
-        android:id="@+id/textView4" />
+        android:id="@+id/textView4"
+        android:layout_marginLeft="40dp" />
 
     <EditText
         android:layout_width="309dp"
@@ -22,7 +24,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="describe it"
-        android:id="@+id/textView3" />
+        android:id="@+id/textView3"
+        android:layout_marginLeft="40dp" />
 
     <EditText
         android:layout_width="307dp"
@@ -34,53 +37,54 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="invite someone"
-        android:id="@+id/textView5" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/invTxt"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/date_txt" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:gravity="center">
         <Button
-            android:layout_width="71dp"
-            android:layout_height="wrap_content"
-            android:text="invite people"
+            android:layout_width="75dp"
+            android:layout_height="fill_parent"
+            android:text="Invite"
             android:id="@+id/invButton"
-            android:layout_weight="0.15" />
-
-        <Button
-            android:layout_width="78dp"
-            android:layout_height="wrap_content"
-            android:text="refresh people"
-            android:id="@+id/button"
-            android:layout_gravity="right"
             android:layout_weight="0.18" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="CREATE"
-            android:id="@+id/createButton"
-            android:layout_weight="0.13" />
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/createButton" />
+
+
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="79dp"
-            android:layout_height="wrap_content"
-            android:text="DELETE"
+            android:layout_width="75dp"
+            android:layout_height="fill_parent"
+            android:text="Delete"
             android:id="@+id/delBut" />
+
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="fill_parent"
+            android:text="Set Date"
+            android:id="@+id/dateButton" />
     </LinearLayout>
 
     <fragment android:name="com.example.qwerty.http.UserListFragment"
         android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/user_list" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:layout="@layout/user_list"
+        android:layout_weight="1.06" />
+
+    <Button
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+        android:text="refresh people"
+        android:id="@+id/refreshBtn"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

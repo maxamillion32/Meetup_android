@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         db = new DBHelper(this);
+        //db.clearDatabase();
         if (!db.getAllUsers().moveToNext()) {
             db.getAllUsers().moveToPrevious();
             intent = new Intent(MainActivity.this, LoginActivity.class);
