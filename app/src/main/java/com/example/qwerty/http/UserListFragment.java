@@ -79,9 +79,7 @@ public class UserListFragment extends ListFragment {
             e.printStackTrace();
         }
 
-        // add data to ArrayAdapter
         UserArrayAdapter adapter = new UserArrayAdapter(getActivity(), userList);
-        // set data to listView with adapter
         setListAdapter(adapter);
     }
 
