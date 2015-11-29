@@ -48,10 +48,11 @@ public class MeetupOverviewActivity extends Activity {
     RequestCondenser getDataRequest;
     RequestCondenser editAttendanceRequest;
     UserListFragment usersFragment;
+    DateParser dateParser = new DateParser();
 
     Context ctx = this;
 
-    private static String TAG = MainActivity.class.getSimpleName();
+    private static String TAG = MeetupOverviewActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +84,12 @@ public class MeetupOverviewActivity extends Activity {
         getDataRequest.request(new RequestCondenser.ActionOnResponse() {
             @Override
             public void responseCallBack(JSONObject response) {
+
                 try {
+                    Log.d(TAG, String.valueOf(response.getJSONObject("date")));
                     title.setText(response.getString("name"));
                     desc.setText(response.getString("description"));
-                    date.setText(parseDate(response.getJSONObject("date"), "dd/MM/yyyy HH:mm"));
+                    date.setText(dateParser.parseResponseDate(response.getJSONObject("date")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -123,21 +126,6 @@ public class MeetupOverviewActivity extends Activity {
             }
         });
 
-    }
-
-    public String parseDate(JSONObject dateObj, String dateFormat) {
-        String textToShow = "";
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.getDefault());
-        try {
-            calendar.setTimeInMillis(dateObj.getLong("from"));
-            textToShow= formatter.format(calendar.getTime());
-            calendar.setTimeInMillis(dateObj.getLong("to"));
-            textToShow += " - " + formatter.format(calendar.getTime());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return textToShow;
     }
 
     private JSONObject populatedGetRequestBody() {

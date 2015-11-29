@@ -23,6 +23,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     JSONObject idJson = new JSONObject();
     JSONObject meetup = new JSONObject();
     JSONObject date = new JSONObject();
+    DateParser dateParser = new DateParser();
     private final int GET_DATE = 1;
     Button createBtn;
     Button deleteBtn;
@@ -52,7 +53,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         dateBtn = (Button) findViewById(R.id.dateButton);
         desc = (TextView) findViewById(R.id.descTxt);
-        dateTxt = (TextView) findViewById(R.id.dateTxt);
+        dateTxt = (TextView) findViewById(R.id.date_txt);
         title = (TextView) findViewById(R.id.titleTxt);
         usersFragment = (UserListFragment) getFragmentManager().findFragmentById(R.id.list);
 
@@ -73,10 +74,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         dateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // launch dates activity
                 Intent intent = new Intent(MeetupActivity.this, DateActivity.class);
-                //   intent.putExtra("uid", c.getString(c.getColumnIndex("uid")));
                 startActivityForResult(intent, GET_DATE);
             }
         });
@@ -172,27 +170,28 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             Bundle extras = data.getExtras();
             try {
                 date = new JSONObject(extras.getString("json"));
+                dateTxt.setText(dateParser.parseSetDate(date));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    @Override
+    public void onInvBtnClick (String invitee){
+        inviteRequest.setRequestBody(populateInviteRequestBody(invitee));
+        inviteRequest.request(new RequestCondenser.ActionOnResponse() {
             @Override
-            public void onInvBtnClick (String invitee){
-                inviteRequest.setRequestBody(populateInviteRequestBody(invitee));
-                inviteRequest.request(new RequestCondenser.ActionOnResponse() {
-                    @Override
-                    public void responseCallBack(JSONObject response) {
-                        if (response.length() == 0)
-                            Toast.makeText(ctx,
-                                    "Either no such user exists or is already a part of this meetup!",
-                                    Toast.LENGTH_LONG).show();
+            public void responseCallBack(JSONObject response) {
+                if (response.length() == 0)
+                    Toast.makeText(ctx,
+                            "Either no such user exists or is already a part of this meetup!",
+                            Toast.LENGTH_LONG).show();
 
-                        usersFragment.passDataToFragment(response);
-                    }
-                });
+                usersFragment.passDataToFragment(response);
             }
+        });
+    }
 
     private JSONObject populatedGetRequestBody() {
         try {
@@ -212,8 +211,8 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         return idJson;
     }
     //the if-clause for the _id is a check on whether this editing session
-    //is an edit session or in fact a create session. I programmed the
-    //API to check for a meetup _id within the request body and to act accordingly.
+    //is an edit session or in fact a create session. The API is programmed
+    //to check for a meetup _id within the request body and to act accordingly.
     private JSONObject populateEditRequestBody () {
         try {
             if(getIntent().hasExtra("_id"))
@@ -228,13 +227,13 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         return meetup;
     }
 
-    //to be clear here, the _id stands for the meeting's _id to which the user will be invited.
+    //to be clear here, the _id stands for the meetings _id to which the user will be invited.
     private JSONObject populateInviteRequestBody (String invitee) {
         JSONObject user = new JSONObject();
         try {
             if(getIntent().hasExtra("_id"))
                 user.put("_id", getIntent().getExtras().getString("_id"));
-                user.put("_email", invitee);
+            user.put("_email", invitee);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -248,7 +247,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        return idJson;
+            return idJson;
         } else return null;
     }
 
@@ -260,6 +259,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
                 try {
                     title.setText(response.getString("name"));
                     desc.setText(response.getString("description"));
+                    dateTxt.setText(dateParser.parseResponseDate(response.getJSONObject("date")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
