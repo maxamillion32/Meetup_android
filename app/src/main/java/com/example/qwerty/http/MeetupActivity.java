@@ -24,9 +24,8 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     JSONObject idJson = new JSONObject();
     JSONObject editData = new JSONObject();
     JSONObject date = new JSONObject();
-    JSONObject meetupResponse = new JSONObject();
+    JSONObject dataObj = new JSONObject();
 
-    String parsedDate;
     private final int GET_DATE = 1;
 
     Button editBtn;
@@ -46,7 +45,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
 
     FragmentManager fm = getFragmentManager();
     DataRetainFragment retainFragment;
-    DateParser dateParser = new DateParser();
     Context ctx = this;
 
     private static String TAG = MeetupActivity.class.getSimpleName();
@@ -64,7 +62,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         dateTxt = (TextView) findViewById(R.id.date_txt);
         title = (TextView) findViewById(R.id.titleTxt);
 
-        parsedDate = null;
         usersFragment = (UserListFragment) fm.findFragmentById(R.id.list);
 
         inviteRequest = new RequestCondenser(
@@ -182,12 +179,8 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         }
         else {
             JSONObject dataToShow = retainFragment.getData();
-            Log.e(TAG, dataToShow.toString());
-            Toast.makeText(getApplicationContext(),
-                    retainFragment.getData().toString(),
-                    Toast.LENGTH_LONG).show();
             try {
-                dateTxt.setText(dataToShow.getString("date"));
+                dateTxt.setText(dataToShow.getString("parsedDate"));
                 title.setText(dataToShow.getString("title"));
                 desc.setText(dataToShow.getString("description"));
                 usersFragment.passDataToFragment(dataToShow.getJSONObject("meetup"));
@@ -197,37 +190,14 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         }
     }
 
-    /*@Override
-    public void onSaveInstanceState(Bundle saveInstanceState) {
-        if(parsedDate != null || meetupResponse.length() != 0) {
-            if (parsedDate != null) {
-                Log.e(TAG, parsedDate);
-                saveInstanceState.putString("date", parsedDate);
-            }
-            if (meetupResponse.length() != 0) {
-                Log.e(TAG, meetupResponse.toString());
-                saveInstanceState.putString("meetup", meetupResponse.toString());
-            }
-        }
-        else {
-            Log.e("IFEMPTY!!!", savedState.getString("meetup"));
-            saveInstanceState.putString("date", savedState.getString("date"));
-            saveInstanceState.putString("meetup", savedState.getString("meetup"));
-        }
-            saveInstanceState.putString("description", String.valueOf(desc.getText()));
-            saveInstanceState.putString("title", String.valueOf(title.getText()));
-    }
-*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GET_DATE && resultCode == Activity.RESULT_OK) {
             Bundle extras = data.getExtras();
             try {
-                date = new JSONObject(extras.getString("json"));
-                retainFragment.setData(
-                    new JSONObject().put("date", dateParser.parseSetDate(date))
-                );
-                dateTxt.setText(dateParser.parseSetDate(date));
+                date = new JSONObject().put("date", new JSONObject(extras.getString("json")));
+                retainFragment.setData(true, date);
+                dateTxt.setText(retainFragment.getParsedDate());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -246,12 +216,8 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
                             Toast.LENGTH_LONG).show();
                 else {
                     try {
-                        retainFragment.setData(
-                            response.put(
-                                "date",
-                                dateParser.parseResponseDate(response.getJSONObject("date"))
-                            )
-                        );
+                        dataObj.put("meetup", response);
+                        retainFragment.setData(false, dataObj);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -287,8 +253,8 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         try {
             if(getIntent().hasExtra("_id"))
                 editData.put("_id", getIntent().getExtras().getString("_id"));
-            if(date.length() != 0)
-                editData.put("date", date);
+            if(retainFragment.getRawDate().length() != 0)
+                editData.put("date", retainFragment.getRawDate());
             editData.put("description", desc.getText().toString());
             editData.put("name", title.getText().toString());
         } catch (JSONException e) {
@@ -326,25 +292,20 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         getDataRequest.request(new RequestCondenser.ActionOnResponse() {
             @Override
             public void responseCallBack(JSONObject response) {
-                try {
-                    meetupResponse = response;
-                    retainFragment.setData(
-                            response.put(
-                                    "date",
-                                    dateParser.parseResponseDate(response.getJSONObject("date"))
-                            )
-                    );
-                    Log.e(TAG, retainFragment.getData().toString());
-                    if(displayData) {
-                        title.setText(response.getString("name"));
-                        desc.setText(response.getString("description"));
-                        dateTxt.setText(parsedDate);
-                    }
-
-                    usersFragment.passDataToFragment(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            try {
+                dataObj.put("meetup", response);
+                dataObj.put("date", response.getJSONObject("date"));
+                retainFragment.setData(false, dataObj);
+                dateTxt.setText(retainFragment.getParsedDate());
+                if(displayData) {
+                    title.setText(response.getString("name"));
+                    desc.setText(response.getString("description"));
                 }
+
+                usersFragment.passDataToFragment(response);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             }
         });
     }

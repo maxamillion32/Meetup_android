@@ -20,27 +20,32 @@ public class DataRetainFragment extends Fragment {
     EditText title;
     EditText desc;
 
+    DateParser dateParser = new DateParser();
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         container = activity;
-        title = (EditText) container.findViewById(R.id.titleTxt);
-        desc = (EditText) container.findViewById(R.id.descTxt);
     }
 
-
-    // this method is only called once for this fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // retain this fragment
         setRetainInstance(true);
+        title = (EditText) container.findViewById(R.id.titleTxt);
+        desc = (EditText) container.findViewById(R.id.descTxt);
     }
 
-    public void setData(JSONObject dataToSave) {
+    public void setData(boolean setDate, JSONObject dataToSave) {
         try {
             if (dataToSave.has("date")) {
-                data.put("date", data.getString("date"));
+                if(setDate) {
+                    data.put("parsedDate", dateParser.parseSetDate(dataToSave.getJSONObject("date")));
+                    data.put("rawDate", dataToSave.getJSONObject("date"));
+                }
+                else
+                    data.put("parsedDate", dateParser.parseResponseDate(dataToSave.getJSONObject("date")));
             }
             if (dataToSave.has("meetup")) {
                 data.put("meetup", dataToSave.getJSONObject("meetup"));
@@ -50,10 +55,30 @@ public class DataRetainFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e("asdasasdasdasdasdasd: ", data.toString());
+
+    }
+
+    public JSONObject getRawDate() {
+        try {
+            return data.getJSONObject("rawDate");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getParsedDate() {
+        try {
+            return data.getString("parsedDate");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public JSONObject getData() {
+
+
         return data;
     }
 
