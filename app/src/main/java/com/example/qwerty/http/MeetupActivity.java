@@ -24,7 +24,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     JSONObject idJson = new JSONObject();
     JSONObject editData = new JSONObject();
     JSONObject date = new JSONObject();
-    JSONObject meetupResponse = null;
+    JSONObject meetupResponse = new JSONObject();
 
     String parsedDate = null;
 
@@ -47,7 +47,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     RequestCondenser editRequest;
     RequestCondenser getDataRequest;
 
-    Bundle savedState;
+    Bundle savedState = null;
 
     FragmentManager fm = getFragmentManager();
     Context ctx = this;
@@ -171,9 +171,9 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
                                 "Meetup successfully created!" +
                                         " Now to add content and people to it!",
                                 Toast.LENGTH_LONG).show();
+                        getData(false);
                     }
                 });
-                getData(false);
             }
             else getData(true);
         }
@@ -208,7 +208,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     public void onSaveInstanceState(Bundle saveInstanceState) {
 
         if(parsedDate != null && meetupResponse != null) {
-            Log.e(TAG, savedState.toString());
             saveInstanceState.putString("date", parsedDate);
             saveInstanceState.putString("meetup", meetupResponse.toString());
         }
@@ -315,16 +314,15 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         getDataRequest.request(new RequestCondenser.ActionOnResponse() {
             @Override
             public void responseCallBack(JSONObject response) {
-                Log.e(TAG, response.toString());
                 try {
                     meetupResponse = response;
                     parsedDate = dateParser.parseResponseDate(response.getJSONObject("date"));
-                    usersFragment.passDataToFragment(response);
                     if(displayData) {
                         title.setText(response.getString("name"));
                         desc.setText(response.getString("description"));
                         dateTxt.setText(parsedDate);
                     }
+                    usersFragment.passDataToFragment(response);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
