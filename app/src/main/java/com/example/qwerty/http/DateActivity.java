@@ -120,9 +120,23 @@ public class DateActivity extends Activity {
             }
 
         });
-    } //onCreate
 
+    } // /onCreate
+    /*
+    public void onSaveInstanceState(Bundle saveInstanceState) {
 
+        if(displayEndD != null && displayStartD != null) {
+            saveInstanceState.putString("date", parsedDate);
+            saveInstanceState.putString("meetup", meetupResponse.toString());
+        }
+        else {
+            saveInstanceState.putString("date", savedState.getString("date"));
+            saveInstanceState.putString("meetup", savedState.getString("meetup"));
+        }
+        saveInstanceState.putString("description", String.valueOf(startdate.getText()));
+        saveInstanceState.putString("title", String.valueOf(title.getText()));
+    }
+ */
     TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

@@ -14,26 +14,27 @@
         <Button
             android:layout_width="86dp"
             android:layout_height="wrap_content"
-            android:text="begins at"
+            android:text="Begins on"
+            android:id="@+id/button_startDate" />
+
+
+        <Button
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="Begins at"
             android:id="@+id/button_startTime" />
 
         <Button
             android:layout_width="86dp"
             android:layout_height="wrap_content"
-            android:text="begins on"
-            android:id="@+id/button_startDate" />
-
-        <Button
-            android:layout_width="86dp"
-            android:layout_height="wrap_content"
-            android:text="ends at"
-            android:id="@+id/button_endTime" />
-
-        <Button
-            android:layout_width="86dp"
-            android:layout_height="wrap_content"
-            android:text="ends on"
+            android:text="Ends on"
             android:id="@+id/button_endDate" />
+
+        <Button
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="Ends at"
+            android:id="@+id/button_endTime" />
 
     </LinearLayout>
 
