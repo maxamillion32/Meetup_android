@@ -50,6 +50,7 @@ public class DataRetainFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.e("asdasasdasdasdasdasd: ", data.toString());
     }
 
     public JSONObject getData() {
