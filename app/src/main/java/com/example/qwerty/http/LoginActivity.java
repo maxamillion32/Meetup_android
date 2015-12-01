@@ -34,7 +34,6 @@ import java.util.Map;
 public class LoginActivity extends Activity {
 
     Button submitButton;
-    TextView responseSpace;
     EditText emailField;
     EditText uNameField;
     ProgressDialog pDialog;
@@ -55,7 +54,6 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         submitButton = (Button) findViewById(R.id.submitButton);
-        responseSpace = (TextView) findViewById(R.id.resultSpace);
         emailField = (EditText)findViewById(R.id.emailInput);
         uNameField = (EditText)findViewById(R.id.uNameInput);
         pDialog = new ProgressDialog(this);
@@ -81,17 +79,7 @@ public class LoginActivity extends Activity {
                             c = db.getUser(response.getString("_id"));
                             if (!c.moveToNext())
                                 db.setData(response.getString("_id"));
-                            c = db.getAllUsers();
-                            String asd = "";
-                            if (c.isBeforeFirst())
-                                c.moveToNext();
-                            while (!c.isAfterLast()) {
-                                asd += " uid:  " + c.getString(c.getColumnIndex("uid"));
-                                asd += " default:  " + c.getString(c.getColumnIndex("defaultAccount"));
-                                c.moveToNext();
-                            }
                             c.close();
-                            responseSpace.setText(asd);
                             if(response.has("_id")) {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);

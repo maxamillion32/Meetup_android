@@ -28,6 +28,8 @@ public class RequestCondenser {
     String TAG;
     Context ctx;
 
+    // A version of the constructor without a request body. Often the body is set
+    // later on, since it needs to contain things like user-set data.
     public RequestCondenser(int method, String url, String TAG, Context ctx) {
         this.reqMethod = method;
         this.url = url;
@@ -35,6 +37,7 @@ public class RequestCondenser {
         this.ctx = ctx;
     }
 
+    // A version of the constructor including the requests body.
     public RequestCondenser(int method, JSONObject body, String url, String TAG, Context ctx) {
         this.reqMethod = method;
         this.body = body;

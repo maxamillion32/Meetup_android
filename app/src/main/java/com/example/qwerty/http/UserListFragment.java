@@ -64,10 +64,10 @@ public class UserListFragment extends ListFragment {
 
                 if(
                     Objects.equals(
-                            users.getJSONObject(i)
-                                    .getJSONArray("meetings")
-                                        .getJSONObject(0)
-                                            .getString("attendance"), "yes"
+                        users.getJSONObject(i)
+                            .getJSONArray("meetings")
+                                .getJSONObject(0)
+                                    .getString("attendance"), "yes"
                     )
                 )
                     attendees.put("yesmen", attendees.getInt("yesmen")+1);
@@ -79,9 +79,7 @@ public class UserListFragment extends ListFragment {
             e.printStackTrace();
         }
 
-        // add data to ArrayAdapter
         UserArrayAdapter adapter = new UserArrayAdapter(getActivity(), userList);
-        // set data to listView with adapter
         setListAdapter(adapter);
     }
 
