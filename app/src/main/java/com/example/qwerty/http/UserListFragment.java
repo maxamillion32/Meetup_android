@@ -64,10 +64,10 @@ public class UserListFragment extends ListFragment {
 
                 if(
                     Objects.equals(
-                            users.getJSONObject(i)
-                                    .getJSONArray("meetings")
-                                        .getJSONObject(0)
-                                            .getString("attendance"), "yes"
+                        users.getJSONObject(i)
+                            .getJSONArray("meetings")
+                                .getJSONObject(0)
+                                    .getString("attendance"), "yes"
                     )
                 )
                     attendees.put("yesmen", attendees.getInt("yesmen")+1);

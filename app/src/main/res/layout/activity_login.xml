@@ -32,9 +32,4 @@
         android:text="Submit"
         android:id="@+id/submitButton" />
 
-    <TextView
-        android:layout_width="192dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/resultSpace"
-        android:layout_weight="0.19" />
 </LinearLayout>

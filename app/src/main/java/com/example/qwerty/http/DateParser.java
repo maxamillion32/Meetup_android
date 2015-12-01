@@ -69,7 +69,6 @@ public class DateParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e(DateParser.class.getSimpleName(), dateObj.toString());
         return textToShow;
     }
 

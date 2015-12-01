@@ -168,7 +168,7 @@ public class DateActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            } // endif
+            }
 
             if (Objects.equals(str, "to")) {
 

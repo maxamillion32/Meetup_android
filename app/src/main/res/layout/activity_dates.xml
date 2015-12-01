@@ -3,43 +3,53 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="86dp"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="begins on"
-        android:id="@+id/button_startDate"
-        android:layout_marginTop="60dp" />
+        android:weightSum="1"
+        android:gravity="center"
+        android:layout_marginTop="60dp">
 
-    <Button
-        android:layout_width="86dp"
-        android:layout_height="wrap_content"
-        android:text="ends on"
-        android:id="@+id/button_endDate" />
+        <Button
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="begins at"
+            android:id="@+id/button_startTime" />
 
-    <Button
-        android:layout_width="86dp"
-        android:layout_height="wrap_content"
-        android:text="begins at"
-        android:id="@+id/button_startTime" />
+        <Button
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="begins on"
+            android:id="@+id/button_startDate" />
 
-    <Button
-        android:layout_width="86dp"
-        android:layout_height="wrap_content"
-        android:text="ends at"
-        android:id="@+id/button_endTime" />
+        <Button
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="ends at"
+            android:id="@+id/button_endTime" />
+
+        <Button
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:text="ends on"
+            android:id="@+id/button_endDate" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView_startDate"
             android:layout_gravity="center_horizontal"
-            android:text="from" />
+            android:text="From" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -58,7 +68,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView_endDate"
             android:layout_gravity="center_horizontal"
-            android:text="to" />
+            android:text="To" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,12 +82,15 @@
         android:layout_height="wrap_content"
         android:text="Done"
         android:id="@+id/done_button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Here you can pick a time and date for Your meetup.You can default your meetup date to the current day by not setting any dates. However, the ending and beginning times are mandatory."
-        android:id="@+id/datepicker_info" />
+        android:id="@+id/datepicker_info"
+        android:layout_marginTop="20dp"
+        android:gravity="center" />
 </LinearLayout>
