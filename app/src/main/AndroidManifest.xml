@@ -23,7 +23,8 @@
             android:name=".MeetupActivity">
         </activity>
         <activity
-            android:name=".DateActivity">
+            android:name=".DateActivity"
+            android:screenOrientation="portrait">
 
         </activity>
     </application>

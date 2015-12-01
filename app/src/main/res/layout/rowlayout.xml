@@ -72,7 +72,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
-        android:text="edit"
+        android:text="Edit"
         android:id="@+id/editBtn" />
 
 </LinearLayout>
