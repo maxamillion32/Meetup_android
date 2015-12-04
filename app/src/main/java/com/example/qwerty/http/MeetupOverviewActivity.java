@@ -86,7 +86,6 @@ public class MeetupOverviewActivity extends Activity {
             public void responseCallBack(JSONObject response) {
 
                 try {
-                    Log.d(TAG, String.valueOf(response.getJSONObject("date")));
                     title.setText(response.getString("name"));
                     desc.setText(response.getString("description"));
                     date.setText(dateParser.parseResponseDate(response.getJSONObject("date")));

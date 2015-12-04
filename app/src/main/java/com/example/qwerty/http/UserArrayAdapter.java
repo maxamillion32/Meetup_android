@@ -21,7 +21,6 @@ public class UserArrayAdapter extends ArrayAdapter {
     // application context
     private Context context;
     private ArrayList<JSONObject> users;
-    private static String TAG = MeetupArrayAdapter.class.getSimpleName();
 
 
 
@@ -44,11 +43,11 @@ public class UserArrayAdapter extends ArrayAdapter {
             JSONObject user = users.get(position).getJSONArray("meetings").getJSONObject(0);
 
             if(Objects.equals(user.getString("attendance"), "undecided"))
-                rowView.setBackgroundColor(Color.YELLOW);
+                rowView.setBackgroundColor(0xCCFFC85E);
             else if(Objects.equals(user.getString("attendance"), "yes"))
-                rowView.setBackgroundColor(Color.GREEN);
+                rowView.setBackgroundColor(0xCC89E15F);
             else if(Objects.equals(user.getString("attendance"), "no"))
-                rowView.setBackgroundColor(Color.RED);
+                rowView.setBackgroundColor(0x99FF3939);
 
 
         } catch (JSONException e) {
