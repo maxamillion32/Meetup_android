@@ -3,7 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="apiUrl">http://devi.labranet.jamk.fi:9000</string>
+    <string name="apiUrl">http://devi.labranet.jamk.fi:80</string>
     <string name="users">users.txt</string>
     <string name="userDB">userDB</string>
     <string name="infoSTR"> Here you can pick a time and date for Your meetup.You can default your meetup date to the current
