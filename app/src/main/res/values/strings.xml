@@ -6,4 +6,10 @@
     <string name="apiUrl">http://devi.labranet.jamk.fi:9000</string>
     <string name="users">users.txt</string>
     <string name="userDB">userDB</string>
+    <string name="infoSTR"> Here you can pick a time and date for Your meetup.You can default your meetup date to the current
+        day by not setting any dates. However, the ending and beginning times are mandatory </string>
+    <string name="titlePlaceholder">Title</string>
+    <string name="descPlaceholder">Description</string>
 </resources>
+
+

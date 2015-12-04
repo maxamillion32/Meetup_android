@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/meetupTitle" />
+        android:id="@+id/meetupTitle"
+        android:background="@drawable/bg"/>
 
     <TextView
         android:layout_width="match_parent"

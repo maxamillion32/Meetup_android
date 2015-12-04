@@ -1,44 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="@drawable/bg"
+    android:padding="20dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Title"
         android:id="@+id/textView4"
         android:layout_marginLeft="40dp" />
 
     <EditText
-        android:layout_width="309dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/titleTxt"
+        android:hint="@string/titlePlaceholder"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Description"
         android:id="@+id/textView3"
         android:layout_marginLeft="40dp" />
 
     <EditText
-        android:layout_width="307dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/descTxt"
+        android:hint="@string/descPlaceholder"
         android:layout_gravity="center_horizontal"
         android:inputType="text" />
 
     <Button
-        android:layout_width="189dp"
-        android:layout_height="37dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:text="Set a Date"
+        android:textColor="#ffffff"
+        android:background="#ff2fa0ff"
         android:id="@+id/dateButton"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="Confirm"
+        android:id="@+id/editButton" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="Invite a User"
+        android:id="@+id/invButton"
         android:layout_gravity="center_horizontal" />
 
     <TextView
@@ -47,49 +69,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/date_txt" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:gravity="center">
-
-        <Button
-            android:layout_width="75dp"
-            android:layout_height="fill_parent"
-            android:text="Confirm"
-            android:id="@+id/editButton" />
-
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="75dp"
-            android:layout_height="fill_parent"
-            android:text="Refresh"
-            android:id="@+id/refreshBtn" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="75dp"
-            android:layout_height="fill_parent"
-            android:text="Delete"
-            android:id="@+id/delBut"
-            android:layout_weight="0.02" />
-
-    </LinearLayout>
-
-    <Button
-        android:layout_width="140dp"
-        android:layout_height="36dp"
-        android:text="Invite a User"
-        android:id="@+id/invButton"
-        android:layout_gravity="center_horizontal" />
-
     <fragment android:name="com.example.qwerty.http.UserListFragment"
         android:id="@+id/list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        tools:layout="@layout/user_list"
-        android:layout_weight="1.06" />
+        android:layout_height="159dp"
+        tools:layout="@layout/user_list" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
@@ -98,5 +82,21 @@
         android:weightSum="1"
         android:gravity="center" >
 
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="Refresh"
+            android:id="@+id/refreshBtn" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="Delete"
+            android:id="@+id/delBut"
+            android:layout_weight="0.02" />
     </LinearLayout>
+
 </LinearLayout>
+</ScrollView>
