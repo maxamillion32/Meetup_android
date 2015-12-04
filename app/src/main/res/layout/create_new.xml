@@ -12,26 +12,12 @@
     android:background="@drawable/bg"
     android:padding="20dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textView4"
-        android:layout_marginLeft="40dp" />
-
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/titleTxt"
         android:hint="@string/titlePlaceholder"
         android:layout_gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textView3"
-        android:layout_marginLeft="40dp" />
 
     <EditText
         android:layout_width="fill_parent"
@@ -43,59 +29,79 @@
 
     <Button
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="35dp"
         android:text="Set a Date"
-        android:textColor="#ffffff"
-        android:background="#ff2fa0ff"
+        android:layout_marginTop="10dp"
         android:id="@+id/dateButton"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ffffff"
+        android:background="#992F3030"/>
 
     <Button
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="35dp"
         android:text="Confirm"
-        android:id="@+id/editButton" />
+        android:layout_marginTop="10dp"
+        android:id="@+id/editButton"
+        android:textColor="#ffffff"
+        android:background="#992F3030"
+        />
 
     <Button
+
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="35dp"
         android:text="Invite a User"
         android:id="@+id/invButton"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ffffff"
+        android:background="#E62F3030"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/date_txt" />
+        android:id="@+id/date_txt"
+        android:textSize="16dp"
+        android:textColor="#ffffff"/>
 
     <fragment android:name="com.example.qwerty.http.UserListFragment"
         android:id="@+id/list"
         android:layout_width="fill_parent"
-        android:layout_height="159dp"
-        tools:layout="@layout/user_list" />
+        android:layout_height="wrap_content"
+        tools:layout="@layout/user_list"
+        android:layout_weight="0.70" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="1"
-        android:gravity="center" >
+        android:gravity="center">
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+
+            android:layout_width="100dp"
+            android:layout_height="35dp"
             android:text="Refresh"
-            android:id="@+id/refreshBtn" />
+            android:id="@+id/refreshBtn"
+            android:textColor="#ffffff"
+            android:background="#E62F3030"
+            android:layout_weight="0.79" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
+
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="5dp"
             android:text="Delete"
             android:id="@+id/delBut"
-            android:layout_weight="0.02" />
+            android:layout_weight="0.23"
+            android:textColor="#ffffff"
+            android:background="#99FF3939"/>
     </LinearLayout>
 
 </LinearLayout>

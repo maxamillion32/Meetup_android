@@ -4,15 +4,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="@drawable/bg">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/meetupTitle"
-        android:background="@drawable/bg"/>
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -30,29 +31,39 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="59dp"
+        android:gravity="center_horizontal">
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="170dp"
+        android:layout_height="35dp"
         android:text="Attend"
-        android:id="@+id/attendBtn" />
+        android:id="@+id/attendBtn"
+        android:textColor="#ffffff"
+        android:background="#E62F3030"/>
 
     <Button
+        android:layout_width="170dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="10dp"
+        android:text="Can&apos;t make it"
+        android:id="@+id/denyBtn"
+        android:textColor="#ffffff"
+        android:background="#E62F3030"
+        android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Can&apos;t make it"
-        android:id="@+id/denyBtn" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/usrCountTxt" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Small Text"
-            android:id="@+id/usrCountTxt" />
-    </LinearLayout>
     <fragment android:name="com.example.qwerty.http.UserListFragment"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/user_list" />
+
 </LinearLayout>

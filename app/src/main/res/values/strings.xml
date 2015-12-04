@@ -10,6 +10,6 @@
         day by not setting any dates. However, the ending and beginning times are mandatory </string>
     <string name="titlePlaceholder">Title</string>
     <string name="descPlaceholder">Description</string>
+    <string name="usernamePlaceholder">Username</string>
+    <string name="emailPlaceholder">Email</string>
 </resources>
-
-
