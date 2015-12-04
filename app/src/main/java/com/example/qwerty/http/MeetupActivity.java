@@ -160,7 +160,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         retainFragment = (DataRetainFragment) fm.findFragmentByTag("retain_fragment");
 
         if (retainFragment == null) {
-
             retainFragment = new DataRetainFragment();
             fm.beginTransaction().add(retainFragment, "retain_fragment").commit();
 
@@ -253,7 +252,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         try {
             if(getIntent().hasExtra("_id"))
                 editData.put("_id", getIntent().getExtras().getString("_id"));
-            if(retainFragment.getRawDate().length() != 0)
+            if(retainFragment.getRawDate() != null)
                 editData.put("date", retainFragment.getRawDate());
             editData.put("description", desc.getText().toString());
             editData.put("name", title.getText().toString());
@@ -309,6 +308,4 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             }
         });
     }
-
-
 }

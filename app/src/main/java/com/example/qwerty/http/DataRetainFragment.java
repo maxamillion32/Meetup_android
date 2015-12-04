@@ -12,6 +12,13 @@ import org.json.JSONObject;
 /**
  * Created by H3916 on 1.12.2015.
  */
+
+/**
+ * This fragment is developed primarily for the MeetupActivity to retain data over configuration
+ * changes, such as device rotation, and date setting. With small changes, it could easily be
+ * utilized more globally throughout the app if need be. At the applications current state however,
+ * there is no need for such a fragment elsewhere.
+ */
 public class DataRetainFragment extends Fragment {
 
     // data object we want to retain
@@ -41,17 +48,17 @@ public class DataRetainFragment extends Fragment {
         try {
             if (dataToSave.has("date")) {
                 if(setDate) {
-                    data.put("parsedDate", dateParser.parseSetDate(dataToSave.getJSONObject("date")));
+                    data.put("parsedDate",
+                            dateParser.parseSetDate(dataToSave.getJSONObject("date")));
                     data.put("rawDate", dataToSave.getJSONObject("date"));
                 }
                 else
-                    data.put("parsedDate", dateParser.parseResponseDate(dataToSave.getJSONObject("date")));
+                    data.put("parsedDate",
+                            dateParser.parseResponseDate(dataToSave.getJSONObject("date")));
             }
             if (dataToSave.has("meetup")) {
                 data.put("meetup", dataToSave.getJSONObject("meetup"));
             }
-            data.put("title", title.getText());
-            data.put("description", desc.getText());
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -36,7 +36,6 @@ public class LoginActivity extends Activity {
     Button submitButton;
     EditText emailField;
     EditText uNameField;
-    ProgressDialog pDialog;
     JSONObject requestData = new JSONObject();
 
     Context ctx = this;
@@ -53,12 +52,11 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        displayNoAccountToast();
+
         submitButton = (Button) findViewById(R.id.submitButton);
         emailField = (EditText)findViewById(R.id.emailInput);
         uNameField = (EditText)findViewById(R.id.uNameInput);
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
 
         SignInOrSignUp = new RequestCondenser(
                 Request.Method.POST,
@@ -101,6 +99,15 @@ public class LoginActivity extends Activity {
             e.printStackTrace();
         }
         return requestData;
+    }
+
+    private void displayNoAccountToast() {
+        if(getIntent().hasExtra("noaccount"))
+            Toast.makeText(ctx,
+                    "This device does not contain any accounts for Login." +
+                    "Please Login or Register here.",
+                    Toast.LENGTH_LONG)
+                .show();
     }
 }
 

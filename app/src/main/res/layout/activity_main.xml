@@ -15,18 +15,19 @@
         android:layout_height="wrap_content"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="Create user"
+        android:text="Register/Login"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/refreshBtn" />
+        android:layout_alignBottom="@+id/refreshBtn" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create meetup"
         android:id="@+id/createMeetButton"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/createUserBtn" />
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/listView"
+        android:layout_alignBottom="@+id/refreshBtn" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -37,12 +38,11 @@
 
     <Button
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:text="Refresh"
         android:id="@+id/refreshBtn"
-        android:layout_above="@+id/listView"
-        android:layout_toStartOf="@+id/createMeetButton"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

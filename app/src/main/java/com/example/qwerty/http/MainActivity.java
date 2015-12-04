@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,26 +50,29 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         db = new DBHelper(this);
-        //db.clearDatabase();
-        if (!db.getAllUsers().moveToNext()) {
-            db.getAllUsers().moveToPrevious();
-            intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
 
         listview = (ListView) findViewById(R.id.listView);
         createUser = (Button) findViewById(R.id.createUserBtn);
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         meetingCreation = (Button) findViewById(R.id.createMeetButton);
 
-        getMeetUps = new RequestCondenser(
-                Request.Method.POST,
-                getString(R.string.apiUrl).concat("/user/meetups"),
-                TAG,
-                ctx
-        );
 
-        sendRequest();
+
+            getMeetUps = new RequestCondenser(
+                    Request.Method.POST,
+                    getString(R.string.apiUrl).concat("/user/meetups"),
+                    TAG,
+                    ctx
+            );
+
+        try {
+            sendRequest();
+        } catch(CursorIndexOutOfBoundsException e) {
+            intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.putExtra("noaccount", true);
+            startActivity(intent);
+            finish();
+        }
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -93,10 +97,8 @@ public class MainActivity extends Activity {
         });
 
         createUser.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                //launch login activity
                 intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
@@ -104,11 +106,11 @@ public class MainActivity extends Activity {
 
         refreshBtn.setOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    sendRequest();
-                }
-            });
+            @Override
+            public void onClick(View v) {
+                sendRequest();
+            }
+        });
     }
 
     private JSONObject getRequestData() {
@@ -145,14 +147,12 @@ public class MainActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-                // add data to ArrayAdapter
                 MeetupArrayAdapter adapter = new MeetupArrayAdapter(
                                                     ctx,
                                                     meetupList,
                                                     c.getString(c.getColumnIndex("uid")),
                                                     getString(R.string.apiUrl)
                                             );
-                // set data to listView with adapter
                 listview.setAdapter(adapter);
             }
         });
