@@ -34,6 +34,13 @@
         android:layout_gravity="center_horizontal"
         android:inputType="text" />
 
+    <Button
+        android:layout_width="189dp"
+        android:layout_height="37dp"
+        android:text="Set a Date"
+        android:id="@+id/dateButton"
+        android:layout_gravity="center_horizontal" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,25 +55,34 @@
 
         <Button
             android:layout_width="75dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:text="Confirm"
             android:id="@+id/editButton" />
-
 
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="75dp"
             android:layout_height="fill_parent"
-            android:text="Delete"
-            android:id="@+id/delBut" />
+            android:text="Refresh"
+            android:id="@+id/refreshBtn" />
 
         <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="75dp"
             android:layout_height="fill_parent"
-            android:text="Set Date"
-            android:id="@+id/dateButton" />
+            android:text="Delete"
+            android:id="@+id/delBut"
+            android:layout_weight="0.02" />
+
     </LinearLayout>
+
+    <Button
+        android:layout_width="140dp"
+        android:layout_height="36dp"
+        android:text="Invite a User"
+        android:id="@+id/invButton"
+        android:layout_gravity="center_horizontal" />
 
     <fragment android:name="com.example.qwerty.http.UserListFragment"
         android:id="@+id/list"
@@ -81,21 +97,6 @@
         android:layout_height="wrap_content"
         android:weightSum="1"
         android:gravity="center" >
-
-        <Button
-            android:layout_width="75dp"
-            android:layout_height="fill_parent"
-            android:text="Invite a User"
-            android:id="@+id/invButton"
-            android:layout_weight="0.36" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Refresh User List"
-            android:id="@+id/refreshBtn"
-            android:layout_weight="0.36" />
 
     </LinearLayout>
 </LinearLayout>

@@ -84,8 +84,6 @@ public class DataRetainFragment extends Fragment {
     }
 
     public JSONObject getData() {
-
-
         return data;
     }
 

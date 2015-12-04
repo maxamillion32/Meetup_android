@@ -180,8 +180,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             JSONObject dataToShow = retainFragment.getData();
             try {
                 dateTxt.setText(dataToShow.getString("parsedDate"));
-                title.setText(dataToShow.getString("title"));
-                desc.setText(dataToShow.getString("description"));
                 usersFragment.passDataToFragment(dataToShow.getJSONObject("meetup"));
             } catch (JSONException e) {
                 e.printStackTrace();
