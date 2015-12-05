@@ -5,7 +5,7 @@
     android:focusableInTouchMode="false"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#d2141414"
     android:weightSum="1"
     android:gravity="start|end">
@@ -55,7 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/checkBox"
-        android:checked="true" />
+        android:checked="true"
+        android:layout_marginLeft="5dp" />
 
     <TextView
         android:clickable="false"
@@ -65,16 +66,21 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="user count"
-        android:id="@+id/rowUsrCountTxt" />
+        android:id="@+id/rowUsrCountTxt"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
     <Button
         android:clickable="true"
         android:focusable="false"
         android:focusableInTouchMode="false"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:textColor="#ffffff"
+        android:layout_width="60dp"
         android:layout_height="36dp"
         android:text="Edit"
-        android:id="@+id/editBtn" />
+        android:id="@+id/editBtn"
+        android:layout_weight="0.11"
+        android:backgroundTint="#E62F3030" />
 
 </LinearLayout>

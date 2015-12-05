@@ -35,7 +35,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
     Button dateBtn;
     TextView title;
     TextView desc;
-    TextView dateTxt;
     UserListFragment usersFragment;
     RequestCondenser inviteRequest;
     RequestCondenser createRequest;
@@ -59,10 +58,10 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         refreshBtn = (Button) findViewById(R.id.refreshBtn);
         dateBtn = (Button) findViewById(R.id.dateButton);
         desc = (TextView) findViewById(R.id.descTxt);
-        dateTxt = (TextView) findViewById(R.id.date_txt);
         title = (TextView) findViewById(R.id.titleTxt);
 
-        usersFragment = (UserListFragment) fm.findFragmentById(R.id.list);
+        usersFragment  = (UserListFragment) fm.findFragmentById(R.id.list);
+        retainFragment = (DataRetainFragment) fm.findFragmentByTag("retain_fragment");
 
         inviteRequest = new RequestCondenser(
                 Request.Method.POST,
@@ -157,8 +156,6 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             }
         });
 
-        retainFragment = (DataRetainFragment) fm.findFragmentByTag("retain_fragment");
-
         if (retainFragment == null) {
             retainFragment = new DataRetainFragment();
             fm.beginTransaction().add(retainFragment, "retain_fragment").commit();
@@ -179,7 +176,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
         else {
             JSONObject dataToShow = retainFragment.getData();
             try {
-                dateTxt.setText(dataToShow.getString("parsedDate"));
+                dateBtn.setText(dataToShow.getString("parsedDate"));
                 usersFragment.passDataToFragment(dataToShow.getJSONObject("meetup"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -194,7 +191,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             try {
                 date = new JSONObject().put("date", new JSONObject(extras.getString("json")));
                 retainFragment.setData(true, date);
-                dateTxt.setText(retainFragment.getParsedDate());
+                dateBtn.setText(retainFragment.getParsedDate());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -293,7 +290,7 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
                 dataObj.put("meetup", response);
                 dataObj.put("date", response.getJSONObject("date"));
                 retainFragment.setData(false, dataObj);
-                dateTxt.setText(retainFragment.getParsedDate());
+                dateBtn.setText(retainFragment.getParsedDate());
                 if(displayData) {
                     title.setText(response.getString("name"));
                     desc.setText(response.getString("description"));
