@@ -138,8 +138,8 @@ public class MeetupOverviewActivity extends Activity {
 
     private JSONObject attendanceEditRequestBody(boolean yesOrNo) {
         try {
-            meetup.put("meetup", extras.getString("meetup"));
-            meetup.put("_id", extras.getString("uid"));
+            meetup.put("_id", extras.getString("meetup"));
+            meetup.put("uid", extras.getString("uid"));
             if(yesOrNo)
                 meetup.put("attendance", "yes");
             else
