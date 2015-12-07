@@ -6,6 +6,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * A simple helper class to create a requestQueue with a specific context and to add requests
+ * to it.
+ */
 public class MySingleton {
     private static MySingleton mInstance;
     private RequestQueue mRequestQueue;

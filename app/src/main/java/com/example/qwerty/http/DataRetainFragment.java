@@ -1,10 +1,7 @@
 package com.example.qwerty.http;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,17 +33,18 @@ public class DataRetainFragment extends Fragment {
     public void setData(boolean setDate, JSONObject dataToSave) {
         try {
             if (dataToSave.has("date")) {
+                //parse date set via datepicker
                 if(setDate) {
-                    data.put("parsedDate",
+                    this.data.put("parsedDate",
                             dateParser.parseSetDate(dataToSave.getJSONObject("date")));
-                    data.put("rawDate", dataToSave.getJSONObject("date"));
+                    this.data.put("rawDate", dataToSave.getJSONObject("date"));
                 }
                 else
-                    data.put("parsedDate",
+                    this.data.put("parsedDate",
                             dateParser.parseResponseDate(dataToSave.getJSONObject("date")));
             }
             if (dataToSave.has("meetup")) {
-                data.put("meetup", dataToSave.getJSONObject("meetup"));
+                this.data.put("meetup", dataToSave.getJSONObject("meetup"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -56,7 +54,7 @@ public class DataRetainFragment extends Fragment {
 
     public JSONObject getRawDate() {
         try {
-            return data.getJSONObject("rawDate");
+            return this.data.getJSONObject("rawDate");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -65,7 +63,16 @@ public class DataRetainFragment extends Fragment {
 
     public String getParsedDate() {
         try {
-            return data.getString("parsedDate");
+            return this.data.getString("parsedDate");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getMeetupId() {
+        try {
+            return this.data.getJSONObject("meetup").getString("_id");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -73,7 +80,7 @@ public class DataRetainFragment extends Fragment {
     }
 
     public JSONObject getData() {
-        return data;
+        return this.data;
     }
 
 }

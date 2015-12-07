@@ -38,7 +38,12 @@ public class MeetupArrayAdapter extends ArrayAdapter{
 
 
 
-    public MeetupArrayAdapter(Context context, ArrayList<JSONObject> meetups, String uid, String apiUrl) {
+    public MeetupArrayAdapter(
+            Context context,
+            ArrayList<JSONObject> meetups,
+            String uid,
+            String apiUrl
+    ) {
         super(context, R.layout.rowlayout, R.id.textView, meetups);
         this.context = context;
         this.meetups = meetups;
@@ -61,7 +66,8 @@ public class MeetupArrayAdapter extends ArrayAdapter{
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
 
         TextView nameField = (TextView) rowView.findViewById(R.id.rowTitleTxt);
@@ -77,7 +83,6 @@ public class MeetupArrayAdapter extends ArrayAdapter{
             rowView.setTag(meetup.getString("_id"));
             descField.setText(meetup.getString("description"));
 
-
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -92,8 +97,6 @@ public class MeetupArrayAdapter extends ArrayAdapter{
                     }
                     intent.putExtras(extras);
                     context.startActivity(intent);
-
-
                 }
             });
 
@@ -141,8 +144,8 @@ public class MeetupArrayAdapter extends ArrayAdapter{
 
     private JSONObject attendanceEditRequestBody(boolean yesOrNo, JSONObject meetup) {
         try {
-            body.put("meetup", meetup.getString("_id"));
-            body.put("_id", uid);
+            body.put("_id", meetup.getString("_id"));
+            body.put("uid", uid);
             if(yesOrNo)
                 body.put("attendance", "yes");
             else

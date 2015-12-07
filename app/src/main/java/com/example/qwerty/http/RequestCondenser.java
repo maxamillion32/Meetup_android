@@ -37,7 +37,7 @@ public class RequestCondenser {
         this.ctx = ctx;
     }
 
-    // A version of the constructor including the requests body.
+    // A version of the constructor including the request body.
     public RequestCondenser(int method, JSONObject body, String url, String TAG, Context ctx) {
         this.reqMethod = method;
         this.body = body;
@@ -63,9 +63,20 @@ public class RequestCondenser {
                     }
                 }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Log.d(TAG, "" + error.getMessage() + "," + error.toString());
+            public void onErrorResponse(VolleyError volleyError) {
+                //Error message gets handled and displayed to the user here,
+                //setting the message is up to the server.
+                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+                    VolleyError error = new VolleyError(new String(volleyError.networkResponse.data));
+                    Toast.makeText(
+                            ctx,
+                            String.valueOf(volleyError.networkResponse.statusCode)
+                            + ": " + error.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+                VolleyLog.d(TAG, "Error: " + volleyError.getMessage());
+                Log.d(TAG, "" + volleyError.getMessage() + "," + volleyError.toString());
             }
         }) {
 
