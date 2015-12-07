@@ -160,10 +160,10 @@ public class MeetupActivity extends Activity implements InviteDialog.InviteListe
             fm.beginTransaction().add(retainFragment, "retain_fragment").commit();
 
             //If this is a creation session. This user will be added to the meetup.
-            if(getIntent().hasExtra("uid")) {
+            if(getIntent().hasExtra("uid"))
                 createMeetup();
-            } else  {
-                getData();}
+            else
+                getData();
         }
         else {
             JSONObject dataToShow = retainFragment.getData();
