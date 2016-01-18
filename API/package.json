@@ -1,0 +1,12 @@
+{
+  "name": "meetup-api",
+  "author": "santtu@sulander.com",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "mongoose": "^4.1.11"
+  },
+  "devDependencies": {
+    "forever": "^0.15.1"
+  }
+}
